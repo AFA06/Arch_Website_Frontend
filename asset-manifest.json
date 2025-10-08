@@ -1,0 +1,39 @@
+{
+  "files": {
+    "main.css": "/Arch_Website_Frontend/static/css/main.5e20778a.css",
+    "main.js": "/Arch_Website_Frontend/static/js/main.205ff9d7.js",
+    "reactPlayerHls.js": "/Arch_Website_Frontend/static/js/reactPlayerHls.b38e1a0c.chunk.js",
+    "reactPlayerDash.js": "/Arch_Website_Frontend/static/js/reactPlayerDash.b373c521.chunk.js",
+    "reactPlayerMux.js": "/Arch_Website_Frontend/static/js/reactPlayerMux.d6287281.chunk.js",
+    "reactPlayerYouTube.js": "/Arch_Website_Frontend/static/js/reactPlayerYouTube.d341b0a6.chunk.js",
+    "reactPlayerVimeo.js": "/Arch_Website_Frontend/static/js/reactPlayerVimeo.9c318430.chunk.js",
+    "reactPlayerWistia.js": "/Arch_Website_Frontend/static/js/reactPlayerWistia.dfb8b7e2.chunk.js",
+    "reactPlayerSpotify.js": "/Arch_Website_Frontend/static/js/reactPlayerSpotify.5fdaa968.chunk.js",
+    "reactPlayerTwitch.js": "/Arch_Website_Frontend/static/js/reactPlayerTwitch.49c957c2.chunk.js",
+    "reactPlayerTiktok.js": "/Arch_Website_Frontend/static/js/reactPlayerTiktok.4565dfbc.chunk.js",
+    "reactPlayerPreview.js": "/Arch_Website_Frontend/static/js/reactPlayerPreview.6f4e7717.chunk.js",
+    "static/js/416.edc9ddcf.chunk.js": "/Arch_Website_Frontend/static/js/416.edc9ddcf.chunk.js",
+    "static/js/372.95b7bce3.chunk.js": "/Arch_Website_Frontend/static/js/372.95b7bce3.chunk.js",
+    "static/js/788.e973e20b.chunk.js": "/Arch_Website_Frontend/static/js/788.e973e20b.chunk.js",
+    "index.html": "/Arch_Website_Frontend/index.html",
+    "main.5e20778a.css.map": "/Arch_Website_Frontend/static/css/main.5e20778a.css.map",
+    "main.205ff9d7.js.map": "/Arch_Website_Frontend/static/js/main.205ff9d7.js.map",
+    "reactPlayerHls.b38e1a0c.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerHls.b38e1a0c.chunk.js.map",
+    "reactPlayerDash.b373c521.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerDash.b373c521.chunk.js.map",
+    "reactPlayerMux.d6287281.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerMux.d6287281.chunk.js.map",
+    "reactPlayerYouTube.d341b0a6.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerYouTube.d341b0a6.chunk.js.map",
+    "reactPlayerVimeo.9c318430.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerVimeo.9c318430.chunk.js.map",
+    "reactPlayerWistia.dfb8b7e2.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerWistia.dfb8b7e2.chunk.js.map",
+    "reactPlayerSpotify.5fdaa968.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerSpotify.5fdaa968.chunk.js.map",
+    "reactPlayerTwitch.49c957c2.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerTwitch.49c957c2.chunk.js.map",
+    "reactPlayerTiktok.4565dfbc.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerTiktok.4565dfbc.chunk.js.map",
+    "reactPlayerPreview.6f4e7717.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerPreview.6f4e7717.chunk.js.map",
+    "416.edc9ddcf.chunk.js.map": "/Arch_Website_Frontend/static/js/416.edc9ddcf.chunk.js.map",
+    "372.95b7bce3.chunk.js.map": "/Arch_Website_Frontend/static/js/372.95b7bce3.chunk.js.map",
+    "788.e973e20b.chunk.js.map": "/Arch_Website_Frontend/static/js/788.e973e20b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5e20778a.css",
+    "static/js/main.205ff9d7.js"
+  ]
+}
