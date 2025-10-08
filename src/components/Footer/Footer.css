@@ -1,0 +1,112 @@
+/* Footer Base */
+.footer {
+  background-color: #1c1d1f;
+  color: #ccc;
+  padding: 40px 20px 20px;
+  font-size: 14px;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+/* Brand */
+.footer-brand {
+  flex: 1;
+  min-width: 220px;
+}
+
+.footer-logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.footer-description {
+  color: #aaa;
+  line-height: 1.5;
+  max-width: 250px;
+}
+
+/* Links */
+.footer-links {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-links h4 {
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #fff;
+}
+
+/* Social */
+.footer-social {
+  flex: 1;
+  min-width: 180px;
+}
+
+.footer-social h4 {
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icons a {
+  color: #ccc;
+  font-size: 18px;
+  transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+  color: #fff;
+}
+
+/* Bottom */
+.footer-bottom {
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-brand,
+  .footer-links,
+  .footer-social {
+    align-items: center;
+  }
+}

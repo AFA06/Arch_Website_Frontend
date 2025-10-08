@@ -1,0 +1,199 @@
+.course-detail-page {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1c1d1f;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+/* HERO / TOP */
+.hero-section {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.hero-left {
+  flex: 2;
+}
+
+.course-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.course-subtitle {
+  font-size: 18px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.meta-row,
+.info-row,
+.instructor-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #6a6f73;
+}
+
+.rating {
+  font-weight: bold;
+  color: #b4690e;
+}
+
+.rating-count,
+.students {
+  color: #5624d0;
+}
+
+.instructor-name {
+  color: #5624d0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  cursor: pointer;
+}
+
+.preview-image {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* What you'll learn */
+.what-you-learn {
+  margin-bottom: 48px;
+}
+
+.what-you-learn h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.what-you-learn ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.what-you-learn li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* Includes */
+.includes-section {
+  margin-bottom: 48px;
+}
+
+.includes-section h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.includes-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.includes-section li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* Curriculum */
+.curriculum-section {
+  margin-bottom: 48px;
+}
+
+.curriculum-section h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.curriculum-list {
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.curriculum-item + .curriculum-item {
+  border-top: 1px solid #d1d7dc;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f7f9fa;
+  cursor: pointer;
+}
+
+.section-title {
+  flex: 1;
+  font-weight: 600;
+}
+
+.section-info {
+  font-size: 14px;
+  color: #6a6f73;
+}
+
+.lecture-list {
+  padding: 0 24px 16px;
+}
+
+.lecture-item {
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Description */
+.description-section {
+  margin-bottom: 48px;
+}
+
+.description-section h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.description-section p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.toggle-desc-btn {
+  background: none;
+  border: 1px solid #1c1d1f;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 14px;
+}
