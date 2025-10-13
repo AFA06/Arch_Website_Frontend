@@ -1,18 +1,37 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "./explore.css";
+// This component is now integrated into the main Navbar component
+// This file is kept for potential future use or as a reference
 
-// Mock data for courses (you can replace this with API fetch later)
-const courses = [
-  { id: 1, name: "3D Design", slug: "3d-design" },
-  { id: 2, name: "Figma UI/UX", slug: "figma-uiux" },
-  { id: 3, name: "Direction", slug: "direction" },
-  { id: 4, name: "Architecture Basics", slug: "architecture-basics" },
-  { id: 5, name: "Advanced Modeling", slug: "advanced-modeling" },
-];
+import { useState } from "react";
+import "./explore.css";
 
 const Explore = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Updated course categories to match the main Navbar
+  const courseCategories = [
+    { id: 1, name: "All Courses", category: "all" },
+    { id: 2, name: "AI", category: "AI" },
+    { id: 3, name: "Design", category: "Design" },
+    { id: 4, name: "Architecture", category: "Architecture" },
+    { id: 5, name: "3D Modeling", category: "3D Modeling" },
+    { id: 6, name: "Programming", category: "Programming" },
+    { id: 7, name: "Business", category: "Business" },
+    { id: 8, name: "Data Science", category: "Data Science" },
+    { id: 9, name: "Mobile Development", category: "Mobile Development" },
+    { id: 10, name: "Cybersecurity", category: "Cybersecurity" },
+    { id: 11, name: "Cloud Computing", category: "Cloud Computing" },
+    { id: 12, name: "Marketing", category: "Marketing" },
+    { id: 13, name: "Project Management", category: "Project Management" },
+  ];
+
+  const handleCategoryClick = (category) => {
+    // Navigate to courses page with category filter
+    const url = category === "all" 
+      ? "/courses" 
+      : `/courses?category=${encodeURIComponent(category)}`;
+    window.location.href = url;
+    setDropdownOpen(false);
+  };
 
   return (
     <div 
@@ -20,18 +39,18 @@ const Explore = () => {
       onMouseEnter={() => setDropdownOpen(true)}
       onMouseLeave={() => setDropdownOpen(false)}
     >
-      <span className="explore-link">Explore ▼</span>
+      <span className="explore-link">Explore</span>
 
       {dropdownOpen && (
         <div className="explore-dropdown">
-          {courses.map(course => (
-            <Link 
-              key={course.id} 
-              to={`/courses/${course.slug}`} 
+          {courseCategories.map(category => (
+            <button
+              key={category.id}
+              onClick={() => handleCategoryClick(category.category)}
               className="explore-item"
             >
-              {course.name}
-            </Link>
+              {category.name}
+            </button>
           ))}
         </div>
       )}
