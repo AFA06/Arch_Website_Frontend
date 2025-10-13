@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 import logo from "../../assets/logo.jpg";
+import api from "../../utils/api"; // ✅ axios instance
 import "./Signup.css";
 
 const Signup = () => {
@@ -15,14 +17,20 @@ const Signup = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // ✅ Handle form field changes
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // ✅ Password visibility toggles
   const togglePassword = () => setShowPassword(!showPassword);
   const toggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const validatePassword = (password) => ({
+  // ✅ Password validation rules
+    const validatePassword = (password) => ({
     length: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
@@ -33,26 +41,26 @@ const Signup = () => {
   const passwordValidations = validatePassword(form.password);
   const allValid = Object.values(passwordValidations).every(Boolean);
 
+  // ✅ Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
+
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || "Signup failed. Try again.");
-        return;
+      const res = await api.post("/auth/signup", form);
+      if (res.status === 201) {
+        toast.success("Account created successfully!");
+        navigate("/login");
       }
-      navigate("/login");
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (err) {
+      const message = err.response?.data?.message || "Signup failed. Please try again.";
+      setError(message);
+      toast.error(message);
     }
   };
 
@@ -102,6 +110,7 @@ const Signup = () => {
             />
           </div>
 
+          {/* Password */}
           <div className="form-group">
             <label>Password</label>
             <div className="password-wrapper">
@@ -119,6 +128,7 @@ const Signup = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
             {passwordFocused && (
               <div className="password-rules">
                 <p className={passwordValidations.length ? "valid" : "invalid"}>
@@ -140,6 +150,7 @@ const Signup = () => {
             )}
           </div>
 
+          {/* Confirm Password */}
           <div className="form-group">
             <label>Confirm Password</label>
             <div className="password-wrapper">

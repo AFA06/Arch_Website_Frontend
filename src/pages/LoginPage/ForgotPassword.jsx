@@ -26,11 +26,14 @@ const ForgotPassword = () => {
     setError('');
     setMessage('');
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/send-reset-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
+      const res = await fetch(`${API_BASE_URL}/auth/send-reset-code`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ email }),
+});
+
 
       const data = await res.json();
 

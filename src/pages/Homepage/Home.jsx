@@ -569,7 +569,15 @@ export default function Home() {
             <div className="stat-label">courses</div>
           </div>
           <div className="profile-button">
-            <button className="btn ghost">View Profile</button>
+            <button 
+              className="btn ghost"
+              onClick={() => {
+                // Navigate to courses page with instructor filter
+                window.location.href = `/courses?instructor=${encodeURIComponent(inst.name)}`;
+              }}
+            >
+              See Courses
+            </button>
           </div>
         </div>
       </div>
@@ -594,11 +602,19 @@ export default function Home() {
         <img src={course.image} alt={course.title} className="popular-course-image" />
         <div className="popular-course-info">
           <h3 className="popular-course-title">{course.title}</h3>
-          <div className="popular-course-price">${course.price}</div>
+          <div className="popular-course-price">{course.price.replace('$', '').replace('.99', '000 UZS')}</div>
           <div className="popular-course-stats">
             {course.students.toLocaleString()} students
           </div>
-          <button className="btn enroll-btn">Enroll</button>
+          <button 
+            className="btn enroll-btn"
+            onClick={() => {
+              // Navigate to courses page with category filter
+              window.location.href = `/courses?category=${encodeURIComponent(course.category)}`;
+            }}
+          >
+            Enroll
+          </button>
         </div>
       </div>
     ))}
