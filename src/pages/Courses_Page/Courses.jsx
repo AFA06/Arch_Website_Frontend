@@ -4,26 +4,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./Courses.css";
 
-/**
- * Courses.jsx
- * - Full page component to list all courses uploaded by admin.
- * - Features: search, category filter, sorting, price & rating filters, responsive grid, pagination, card UI.
- *
- * Backend:
- * - Tries to GET /api/courses (expecting array of { id, title, subtitle, image, price, rating, ratingCount, students, instructor, lastUpdated, category, language, captionLanguage, priceCurrency })
- * - If fetch fails, uses built-in dummy data so page works standalone.
- *
- * Usage:
- * - Drop this file and Courses.css in same folder.
- * - Route to this component for the "All Courses" page.
- */
-
 const FALLBACK_COURSES = [
   {
     id: "c_ai_arch_101",
     title: "AI Architecture Fundamentals: From Concept to Implementation",
     subtitle: "Master AI system design, neural networks, and deployment strategies for modern applications.",
-    image: "/src/assets/3d-modeling.jpg",
+    image: "https://picsum.photos/seed/ai_arch_101/900/600",
     price: 250000,
     priceCurrency: "UZS",
     rating: 4.8,
@@ -39,7 +25,7 @@ const FALLBACK_COURSES = [
     id: "c_figma_master",
     title: "Figma Masterclass: Professional UI/UX Design Workflow",
     subtitle: "Complete guide to Figma: from wireframes to interactive prototypes and design systems.",
-    image: "/src/assets/figma.jpg",
+    image: "https://picsum.photos/seed/figma_master/900/600",
     price: 180000,
     priceCurrency: "UZS",
     rating: 4.7,
@@ -55,7 +41,7 @@ const FALLBACK_COURSES = [
     id: "c_arch_design",
     title: "Modern Architecture Design Principles",
     subtitle: "Learn contemporary architectural concepts, sustainable design, and digital modeling techniques.",
-    image: "/src/assets/architecture.jpg",
+    image: "https://picsum.photos/seed/arch_design/900/600",
     price: 320000,
     priceCurrency: "UZS",
     rating: 4.9,
@@ -71,7 +57,7 @@ const FALLBACK_COURSES = [
     id: "c_3d_modeling",
     title: "Advanced 3D Modeling & Visualization",
     subtitle: "Master 3D modeling, rendering, and visualization techniques for architectural projects.",
-    image: "/src/assets/3d-modeling.jpg",
+    image: "https://picsum.photos/seed/3d_modeling/900/600",
     price: 290000,
     priceCurrency: "UZS",
     rating: 4.6,
@@ -87,7 +73,7 @@ const FALLBACK_COURSES = [
     id: "c_web_dev_react",
     title: "Complete Web Development with React & Node.js",
     subtitle: "Build full-stack web applications using React, Node.js, and modern development practices.",
-    image: "/src/assets/hero-bg.jpg",
+    image: "https://picsum.photos/seed/web_dev_react/900/600",
     price: 220000,
     priceCurrency: "UZS",
     rating: 4.5,
@@ -103,7 +89,7 @@ const FALLBACK_COURSES = [
     id: "c_business_strategy",
     title: "Business Strategy & Entrepreneurship",
     subtitle: "Essential business skills for entrepreneurs: strategy, marketing, finance, and growth.",
-    image: "/src/assets/login-logo.jpg",
+    image: "https://picsum.photos/seed/business_strategy/900/600",
     price: 0,
     priceCurrency: "UZS",
     rating: 4.4,
@@ -119,7 +105,7 @@ const FALLBACK_COURSES = [
     id: "c_data_science",
     title: "Data Science & Analytics Mastery",
     subtitle: "Comprehensive data science course covering Python, statistics, machine learning, and visualization.",
-    image: "/src/assets/hero-bg.jpg",
+    image: "https://picsum.photos/seed/data_science/900/600",
     price: 280000,
     priceCurrency: "UZS",
     rating: 4.7,
@@ -135,7 +121,7 @@ const FALLBACK_COURSES = [
     id: "c_mobile_dev",
     title: "Mobile App Development: React Native",
     subtitle: "Build cross-platform mobile apps using React Native, Firebase, and modern mobile development tools.",
-    image: "/src/assets/figma.jpg",
+    image: "https://picsum.photos/seed/mobile_dev/900/600",
     price: 240000,
     priceCurrency: "UZS",
     rating: 4.6,
@@ -151,7 +137,7 @@ const FALLBACK_COURSES = [
     id: "c_cybersecurity",
     title: "Cybersecurity Fundamentals",
     subtitle: "Learn essential cybersecurity concepts, ethical hacking, and network security best practices.",
-    image: "/src/assets/3d-modeling.jpg",
+    image: "https://picsum.photos/seed/cybersecurity/900/600",
     price: 260000,
     priceCurrency: "UZS",
     rating: 4.8,
@@ -167,7 +153,7 @@ const FALLBACK_COURSES = [
     id: "c_cloud_computing",
     title: "Cloud Computing & AWS Solutions",
     subtitle: "Master cloud computing with AWS: EC2, S3, Lambda, and scalable application deployment.",
-    image: "/src/assets/architecture.jpg",
+    image: "https://picsum.photos/seed/cloud_computing/900/600",
     price: 300000,
     priceCurrency: "UZS",
     rating: 4.9,
@@ -183,7 +169,7 @@ const FALLBACK_COURSES = [
     id: "c_digital_marketing",
     title: "Digital Marketing & SEO Strategy",
     subtitle: "Complete digital marketing course: SEO, social media, content marketing, and analytics.",
-    image: "/src/assets/login-logo.jpg",
+    image: "https://picsum.photos/seed/digital_marketing/900/600",
     price: 150000,
     priceCurrency: "UZS",
     rating: 4.3,
@@ -199,7 +185,7 @@ const FALLBACK_COURSES = [
     id: "c_project_management",
     title: "Project Management & Agile Methodologies",
     subtitle: "Master project management with Agile, Scrum, and modern project delivery frameworks.",
-    image: "/src/assets/hero-bg.jpg",
+    image: "https://picsum.photos/seed/project_management/900/600",
     price: 200000,
     priceCurrency: "UZS",
     rating: 4.5,
@@ -221,24 +207,18 @@ const SORT_OPTIONS = [
 ];
 
 export default function CoursesPage() {
-  // data
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
-  // filters / UI state
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(new Set());
   const [minRating, setMinRating] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(100); // relative percent/value; we'll clamp with data max price
+  const [maxPrice, setMaxPrice] = useState(100);
   const [sortBy, setSortBy] = useState("newest");
   const [onlyFree, setOnlyFree] = useState(false);
-
-  // pagination
   const PAGE_SIZE = 9;
   const [page, setPage] = useState(1);
-
-  // UI helpers
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
 
   useEffect(() => {
@@ -254,7 +234,6 @@ export default function CoursesPage() {
           setCourses(Array.isArray(data) && data.length ? data : FALLBACK_COURSES);
         }
       } catch (err) {
-        // Use fallback, but keep a note that fetch failed
         if (!cancelled) {
           setFetchError(err.message);
           setCourses(FALLBACK_COURSES);
@@ -267,7 +246,6 @@ export default function CoursesPage() {
     return () => (cancelled = true);
   }, []);
 
-  // derive category list & price bounds
   const categories = useMemo(() => {
     const set = new Set();
     courses.forEach((c) => {
@@ -284,11 +262,9 @@ export default function CoursesPage() {
     return { max, min };
   }, [courses]);
 
-  // transform courses according to filters / sort
   const filteredSorted = useMemo(() => {
     let list = courses.slice();
 
-    // Search (title, subtitle, instructor, tags)
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter((c) => {
@@ -301,31 +277,24 @@ export default function CoursesPage() {
       });
     }
 
-    // Category filter (if any selected)
     if (selectedCategories.size > 0) {
       list = list.filter((c) => selectedCategories.has(c.category) || (c.tags || []).some((t) => selectedCategories.has(t)));
     }
 
-    // Only free
     if (onlyFree) {
       list = list.filter((c) => Number(c.price || 0) <= 0);
     } else {
-      // Price filter by maxPrice (interpreted as absolute value if priceStats.max > 0)
       const numericMax = Number(maxPrice);
       if (!Number.isNaN(numericMax)) {
-        // We interpret maxPrice as an absolute value if priceStats.max > 0 and maxPrice <= priceStats.max
-        // To keep UI simple, clamp to actual max
         const cap = Math.max(priceStats.max, numericMax);
         list = list.filter((c) => Number(c.price || 0) <= cap);
       }
     }
 
-    // rating filter
     if (minRating > 0) {
       list = list.filter((c) => Number(c.rating || 0) >= minRating);
     }
 
-    // Sorting
     list.sort((a, b) => {
       switch (sortBy) {
         case "newest":
@@ -344,11 +313,9 @@ export default function CoursesPage() {
     return list;
   }, [courses, search, selectedCategories, minRating, maxPrice, sortBy, onlyFree, priceStats]);
 
-  // paginated slice
   const totalPages = Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE));
   const paginated = filteredSorted.slice(0, page * PAGE_SIZE);
 
-  // handlers
   const toggleCategory = (cat) => {
     const next = new Set(selectedCategories);
     if (next.has(cat)) next.delete(cat);
@@ -367,14 +334,17 @@ export default function CoursesPage() {
     setPage(1);
   };
 
-  // when priceStats.max changes, set maxPrice default
   useEffect(() => {
     if (priceStats.max > 0) setMaxPrice(priceStats.max);
   }, [priceStats.max]);
 
+  const openTelegram = (username = "abdukarimov_arch") => {
+    const url = `https://t.me/${username.replace(/^@/, "")}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <div className="courses-page">
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">Master Architecture & Design</h1>
@@ -399,7 +369,6 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      {/* Search and Controls Bar */}
       <div className="search-controls-bar">
         <div className="search-controls-container">
           <div className="search-wrapper">
@@ -415,9 +384,7 @@ export default function CoursesPage() {
             />
             <button
               className="search-clear"
-              onClick={() => {
-                setSearch("");
-              }}
+              onClick={() => setSearch("")}
               title="Clear search"
             >
               ✕
@@ -454,7 +421,6 @@ export default function CoursesPage() {
       </div>
 
       <div className="courses-body">
-        {/* Filters panel (sidebar on desktop, collapsible on mobile) */}
         <aside className={`filters-panel ${showFiltersPanel ? "open" : ""}`} aria-hidden={!showFiltersPanel}>
           <div className="filters-header">
             <h3>Filters</h3>
@@ -538,40 +504,21 @@ export default function CoursesPage() {
             <h4>Other</h4>
             <div className="other-row">
               <label className="checkbox-inline">
-                <input
-                  type="checkbox"
-                  checked={false}
-                  onChange={() => {}}
-                  disabled
-                />
+                <input type="checkbox" checked={false} onChange={() => {}} disabled />
                 New &amp; trending (coming soon)
               </label>
               <label className="checkbox-inline">
-                <input
-                  type="checkbox"
-                  checked={false}
-                  onChange={() => {}}
-                  disabled
-                />
+                <input type="checkbox" checked={false} onChange={() => {}} disabled />
                 Certificate included (coming soon)
               </label>
             </div>
           </div>
         </aside>
 
-        {/* Main grid */}
         <main className="courses-main">
-          {loading && (
-            <div className="status info">Loading courses...</div>
-          )}
-
-          {!loading && fetchError && (
-            <div className="status warn">Couldn't fetch from server — showing fallback content.</div>
-          )}
-
-          {!loading && filteredSorted.length === 0 && (
-            <div className="status empty">No courses match your filters. Try removing some filters.</div>
-          )}
+          {loading && <div className="status info">Loading courses...</div>}
+          {!loading && fetchError && <div className="status warn">Couldn't fetch from server — showing fallback content.</div>}
+          {!loading && filteredSorted.length === 0 && <div className="status empty">No courses match your filters. Try removing some filters.</div>}
 
           <div className="courses-grid">
             {paginated.map((course) => (
@@ -599,14 +546,10 @@ export default function CoursesPage() {
                   <div className="card-footer">
                     <div className="instructor">{course.instructor}</div>
                     <div className="actions">
-                      {/* Replace href with your route, e.g. /courses/[id] */}
-                      <a className="btn btn-outline" href={`/courses/${course.id}`}>View</a>
+                      {/* BUY now opens Telegram chat with the specified username */}
                       <button
                         className="btn btn-primary"
-                        onClick={() => {
-                          // example: you can open purchase flow/modal here
-                          alert(`Open course: ${course.title}`);
-                        }}
+                        onClick={() => openTelegram("abdukarimov_arch")}
                       >
                         {Number(course.price || 0) <= 0 ? "Enroll" : `Buy ${Number(course.price).toLocaleString()} ${course.priceCurrency || "UZS"}`}
                       </button>
@@ -617,7 +560,6 @@ export default function CoursesPage() {
             ))}
           </div>
 
-          {/* Pagination / load more */}
           <div className="pagination-row">
             <div className="results-count">
               Showing {Math.min(paginated.length, filteredSorted.length)} of {filteredSorted.length} results
