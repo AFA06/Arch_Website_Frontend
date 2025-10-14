@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Arch_Website_Frontend/static/css/main.5e20778a.css",
-    "main.js": "/Arch_Website_Frontend/static/js/main.205ff9d7.js",
+    "main.css": "/Arch_Website_Frontend/static/css/main.5a1ba2dd.css",
+    "main.js": "/Arch_Website_Frontend/static/js/main.4a447be9.js",
     "reactPlayerHls.js": "/Arch_Website_Frontend/static/js/reactPlayerHls.b38e1a0c.chunk.js",
     "reactPlayerDash.js": "/Arch_Website_Frontend/static/js/reactPlayerDash.b373c521.chunk.js",
     "reactPlayerMux.js": "/Arch_Website_Frontend/static/js/reactPlayerMux.d6287281.chunk.js",
@@ -16,8 +16,8 @@
     "static/js/372.95b7bce3.chunk.js": "/Arch_Website_Frontend/static/js/372.95b7bce3.chunk.js",
     "static/js/788.e973e20b.chunk.js": "/Arch_Website_Frontend/static/js/788.e973e20b.chunk.js",
     "index.html": "/Arch_Website_Frontend/index.html",
-    "main.5e20778a.css.map": "/Arch_Website_Frontend/static/css/main.5e20778a.css.map",
-    "main.205ff9d7.js.map": "/Arch_Website_Frontend/static/js/main.205ff9d7.js.map",
+    "main.5a1ba2dd.css.map": "/Arch_Website_Frontend/static/css/main.5a1ba2dd.css.map",
+    "main.4a447be9.js.map": "/Arch_Website_Frontend/static/js/main.4a447be9.js.map",
     "reactPlayerHls.b38e1a0c.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerHls.b38e1a0c.chunk.js.map",
     "reactPlayerDash.b373c521.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerDash.b373c521.chunk.js.map",
     "reactPlayerMux.d6287281.chunk.js.map": "/Arch_Website_Frontend/static/js/reactPlayerMux.d6287281.chunk.js.map",
@@ -33,7 +33,7 @@
     "788.e973e20b.chunk.js.map": "/Arch_Website_Frontend/static/js/788.e973e20b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5e20778a.css",
-    "static/js/main.205ff9d7.js"
+    "static/css/main.5a1ba2dd.css",
+    "static/js/main.4a447be9.js"
   ]
 }
