@@ -1,4 +1,4 @@
-// src/context/CartContext.js
+// src/context/CartContext.jsx
 import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./AuthContext";
@@ -6,10 +6,10 @@ import { AuthContext } from "./AuthContext";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user, token } = useContext(AuthContext); // Auth info
+  const { user, token } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
 
-  // ✅ Load cart on mount
+  // Load cart from backend/localStorage
   useEffect(() => {
     const loadCart = async () => {
       const localCart = localStorage.getItem("cart");
@@ -43,10 +43,10 @@ export const CartProvider = ({ children }) => {
       }
     };
 
-    loadCart();
+    if (token !== null) loadCart(); // Wait for token to load
   }, [user, token]);
 
-  // ✅ Save cart to localStorage and backend whenever it changes
+  // Save cart to localStorage + backend
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
 
@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
     }
   }, [cartItems, user, token]);
 
-  // ✅ Add course to cart
+  // Add course to cart
   const addToCart = useCallback((course) => {
     const id = course.id || course._id;
     if (!id) return;
@@ -68,12 +68,12 @@ export const CartProvider = ({ children }) => {
     });
   }, []);
 
-  // ✅ Remove course from cart
+  // Remove course from cart
   const removeFromCart = useCallback((courseId) => {
     setCartItems(prev => prev.filter(item => item.id !== courseId));
   }, []);
 
-  // ✅ Clear cart
+  // Clear cart
   const clearCart = useCallback(() => {
     setCartItems([]);
     localStorage.removeItem("cart");
@@ -84,16 +84,12 @@ export const CartProvider = ({ children }) => {
     }
   }, [user, token]);
 
-  // ✅ Cart helpers
+  // Helpers
   const getCartTotal = useCallback(() => cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0), [cartItems]);
   const getCartItemsCount = useCallback(() => cartItems.length, [cartItems]);
   const isInCart = useCallback((courseId) => cartItems.some(item => item.id === courseId), [cartItems]);
 
-  const refreshCartFromStorage = useCallback(() => {
-    const saved = localStorage.getItem("cart");
-    if (saved) setCartItems(JSON.parse(saved));
-  }, []);
-
+  // Get related courses
   const getRelatedCourses = useCallback((currentCourse, allCourses, limit = 4) => {
     const cartIds = cartItems.map(item => item.id);
     const sameCategory = allCourses
@@ -126,7 +122,6 @@ export const CartProvider = ({ children }) => {
       getCartTotal,
       getCartItemsCount,
       isInCart,
-      refreshCartFromStorage,
       getRelatedCourses,
     }}>
       {children}
