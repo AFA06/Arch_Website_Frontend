@@ -1,7 +1,8 @@
 // Courses.jsx
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
+import { CartContext } from "../../context/CartContext";
 import "./Courses.css";
 
 const FALLBACK_COURSES = [
@@ -207,9 +208,11 @@ const SORT_OPTIONS = [
 ];
 
 export default function CoursesPage() {
+  const { addToCart, isInCart } = useContext(CartContext);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [addedItems, setAddedItems] = useState(new Set());
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(new Set());
@@ -338,10 +341,7 @@ export default function CoursesPage() {
     if (priceStats.max > 0) setMaxPrice(priceStats.max);
   }, [priceStats.max]);
 
-  const openTelegram = (username = "abdukarimov_arch") => {
-    const url = `https://t.me/${username.replace(/^@/, "")}`;
-    window.open(url, "_blank");
-  };
+  // Removed openTelegram function as it's no longer needed
 
   return (
     <div className="courses-page">
@@ -546,13 +546,34 @@ export default function CoursesPage() {
                   <div className="card-footer">
                     <div className="instructor">{course.instructor}</div>
                     <div className="actions">
-                      {/* BUY now opens Telegram chat with the specified username */}
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => openTelegram("abdukarimov_arch")}
-                      >
-                        {Number(course.price || 0) <= 0 ? "Enroll" : `Buy ${Number(course.price).toLocaleString()} ${course.priceCurrency || "UZS"}`}
-                      </button>
+                      {isInCart(course.id) ? (
+                        <button className="btn btn-secondary" disabled>
+                          ✓ Added to Basket
+                        </button>
+                      ) : (
+                        <button
+                          className={`btn ${addedItems.has(course.id) ? 'btn-secondary' : 'btn-primary'}`}
+                          onClick={() => {
+                            addToCart(course);
+                            setAddedItems(prev => new Set([...prev, course.id]));
+                            // Remove from added items after 2 seconds to allow visual feedback
+                            setTimeout(() => {
+                              setAddedItems(prev => {
+                                const newSet = new Set(prev);
+                                newSet.delete(course.id);
+                                return newSet;
+                              });
+                            }, 2000);
+                          }}
+                          disabled={addedItems.has(course.id)}
+                        >
+                          {addedItems.has(course.id) ? (
+                            "✓ Added!"
+                          ) : (
+                            Number(course.price || 0) <= 0 ? "Add to Basket (Free)" : `Add to Basket - ${Number(course.price).toLocaleString()} ${course.priceCurrency || "UZS"}`
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

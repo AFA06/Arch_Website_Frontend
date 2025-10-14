@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../utils/api";
+import { AuthContext } from "../../context/AuthContext";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,11 +27,19 @@ const Login = () => {
       const data = res.data;
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      login(data.user); // Use AuthContext login function
 
       toast.success("Login successful!");
-      navigate("/");
-      window.location.reload();
+      
+      // Check if user was redirected from cart
+      const returnPath = localStorage.getItem("returnAfterLogin");
+      if (returnPath) {
+        localStorage.removeItem("returnAfterLogin");
+        navigate(returnPath);
+      } else {
+        navigate("/");
+      }
+      // Removed window.location.reload() to preserve cart state
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid email or password");
     }

@@ -1,5 +1,6 @@
 // Home.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 const popularCourses = [
@@ -343,6 +344,7 @@ const faqs = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [hoveredCourse, setHoveredCourse] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -358,6 +360,13 @@ export default function Home() {
   const totalSlides = Math.ceil(popularCourses.length / 3);
   const handleNext = () => setCarouselIndex((prev) => (prev + 1) % totalSlides);
   const handlePrev = () => setCarouselIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+
+  // Convert USD price to UZS (approximate rate: 1 USD = 12,500 UZS)
+  const convertToUZS = (priceStr) => {
+    const price = parseFloat(priceStr.replace('$', ''));
+    const uzsPrice = Math.round(price * 12500);
+    return uzsPrice.toLocaleString() + ' UZS';
+  };
   const getVisibleCourses = () => {
     const start = carouselIndex * 3;
     return popularCourses.slice(start, start + 3);
@@ -494,9 +503,15 @@ export default function Home() {
           <div className="course-info">
             <h3>{course.title}</h3>
             <div className="course-meta">
-              <span className="course-price">{course.price}</span>
+              <span className="course-price">{convertToUZS(course.price)}</span>
               <span>{course.students.toLocaleString()} students</span>
             </div>
+            <button 
+              className="see-course-btn"
+              onClick={() => navigate('/courses')}
+            >
+              See Course
+            </button>
           </div>
 
           {hoveredCourse === course.id && (
@@ -573,7 +588,7 @@ export default function Home() {
               className="btn ghost"
               onClick={() => {
                 // Navigate to courses page with instructor filter
-                window.location.href = `/courses?instructor=${encodeURIComponent(inst.name)}`;
+                navigate(`/courses?instructor=${encodeURIComponent(inst.name)}`);
               }}
             >
               See Courses
@@ -610,7 +625,7 @@ export default function Home() {
             className="btn enroll-btn"
             onClick={() => {
               // Navigate to courses page with category filter
-              window.location.href = `/courses?category=${encodeURIComponent(course.category)}`;
+              navigate(`/courses?category=${encodeURIComponent(course.category)}`);
             }}
           >
             Enroll

@@ -59,6 +59,41 @@
   gap: 20px;
 }
 
+/* Shopping Cart Icon */
+.cart-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ddd;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.cart-icon:hover {
+  color: #fff;
+  background-color: #2a2b2e;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ff6b35;
+  color: white;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  border: 2px solid #1c1d1f;
+}
+
 /* Username */
 .navbar-username {
   font-size: 15px; /* slightly bigger */

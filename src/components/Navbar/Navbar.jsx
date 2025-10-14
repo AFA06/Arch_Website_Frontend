@@ -1,12 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { LogOut, User, Bell, BookOpen, Edit } from "lucide-react";
+import { CartContext } from "../../context/CartContext";
+import { LogOut, Bell, BookOpen, Edit, ShoppingCart } from "lucide-react";
 import "./Navbar.css";
 import "./Explore_filter/explore.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
+  const { getCartItemsCount } = useContext(CartContext);
 
   const courseCategories = [
     { id: 1, name: "All Courses", category: "all" },
@@ -45,7 +48,7 @@ const Navbar = () => {
       category === "all"
         ? "/courses"
         : `/courses?category=${encodeURIComponent(category)}`;
-    window.location.href = url;
+    navigate(url);
     setDropdownOpen(false);
   };
 
@@ -97,6 +100,14 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="navbar-right">
+          {/* Shopping Cart */}
+          <Link to="/cart" className="cart-icon">
+            <ShoppingCart size={24} />
+            {getCartItemsCount() > 0 && (
+              <span className="cart-badge">{getCartItemsCount()}</span>
+            )}
+          </Link>
+
           {user ? (
             <div className="profile-avatar" onClick={() => setSidebarOpen(true)}>
               {user.image ? (

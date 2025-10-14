@@ -364,6 +364,26 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* See Course Button */
+.see-course-btn {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c69 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.see-course-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
 /* Show All Link */
 .show-all-wrapper {
   margin-top: 24px;

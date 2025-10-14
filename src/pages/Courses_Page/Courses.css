@@ -648,6 +648,22 @@
   color: var(--accent);
 }
 
+.btn-secondary{
+  background: #4ade80;
+  color: white;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:disabled{
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.btn-primary{
+  transition: all 0.3s ease;
+}
+
 /* pagination row */
 .pagination-row{
   display:flex;
