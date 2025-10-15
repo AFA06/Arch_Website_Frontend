@@ -6,6 +6,7 @@ import { CartProvider } from "./context/CartContext";
 // Layout Components
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
 import Home from "./pages/Homepage/Home";
@@ -14,6 +15,8 @@ import CourseDetail from "./pages/CourseDetail";
 import Login from "./pages/LoginPage/Login";
 import Signup from "./pages/LoginPage/Signup";
 import ShoppingCart from "./components/Navbar/Basked/ShoppingCart";
+import MyCourses from "./pages/MyCourses/MyCourses";
+import CoursePlayer from "./pages/CoursePlayer/CoursePlayer";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -41,6 +44,24 @@ function App() {
               <Route path="/cart" element={<ShoppingCart />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              
+              {/* Protected Routes */}
+              <Route
+                path="/my-courses"
+                element={
+                  <ProtectedRoute>
+                    <MyCourses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/course/:slug"
+                element={
+                  <ProtectedRoute>
+                    <CoursePlayer />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </Layout>
         </CartProvider>
