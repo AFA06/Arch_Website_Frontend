@@ -26,12 +26,20 @@ const Login = () => {
       const res = await api.post("/auth/login", form);
       const data = res.data;
 
+      if (!data.token) {
+        throw new Error("Login failed: token missing");
+      }
+
+      // ✅ Save token + user in localStorage
       localStorage.setItem("token", data.token);
-      login(data.user); // Use AuthContext login function
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ Update AuthContext and sync cart
+      await login(data.user, data.token);
 
       toast.success("Login successful!");
-      
-      // Check if user was redirected from cart
+
+      // ✅ Redirect user to previous page (cart) or home
       const returnPath = localStorage.getItem("returnAfterLogin");
       if (returnPath) {
         localStorage.removeItem("returnAfterLogin");
@@ -39,9 +47,8 @@ const Login = () => {
       } else {
         navigate("/");
       }
-      // Removed window.location.reload() to preserve cart state
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid email or password");
+      toast.error(err.response?.data?.message || err.message || "Invalid email or password");
     }
   };
 
@@ -50,11 +57,7 @@ const Login = () => {
       <div className="login-box">
         {/* HEADER */}
         <div className="login-header">
-          <img
-            src="/logo192.png"
-            alt="Logo"
-            className="login-logo"
-          />
+          <img src="/logo192.png" alt="Logo" className="login-logo" />
           <h2>Welcome Back</h2>
           <p>Log in to access your account</p>
         </div>

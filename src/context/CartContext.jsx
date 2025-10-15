@@ -1,95 +1,59 @@
 // src/context/CartContext.jsx
-import { createContext, useState, useEffect, useCallback, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "./AuthContext";
+import { createContext, useState, useEffect, useCallback } from "react";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user, token } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
 
-  // Load cart from backend/localStorage
+  // Load cart from localStorage on mount
   useEffect(() => {
-    const loadCart = async () => {
-      const localCart = localStorage.getItem("cart");
-      if (user && token) {
-        try {
-          // Fetch backend cart
-          const res = await axios.get("/api/cart", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          let backendCart = res.data || [];
+    const localCart = localStorage.getItem("cart");
+    if (localCart) setCartItems(JSON.parse(localCart));
+  }, []);
 
-          // Merge localStorage cart with backend cart
-          if (localCart) {
-            const parsed = JSON.parse(localCart);
-            if (Array.isArray(parsed)) {
-              const merged = [...backendCart];
-              parsed.forEach(item => {
-                if (!merged.some(i => i.id === item.id)) merged.push(item);
-              });
-              backendCart = merged;
-            }
-          }
-
-          setCartItems(backendCart);
-        } catch (err) {
-          console.error("❌ Failed to load backend cart:", err);
-          if (localCart) setCartItems(JSON.parse(localCart));
-        }
-      } else if (localCart) {
-        setCartItems(JSON.parse(localCart));
-      }
-    };
-
-    if (token !== null) loadCart(); // Wait for token to load
-  }, [user, token]);
-
-  // Save cart to localStorage + backend
+  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
-    if (user && token) {
-      axios.post("/api/cart", { items: cartItems }, {
-        headers: { Authorization: `Bearer ${token}` },
-      }).catch(err => console.error("❌ Failed to save cart to backend:", err));
-    }
-  }, [cartItems, user, token]);
-
-  // Add course to cart
+  // Add item to cart
   const addToCart = useCallback((course) => {
     const id = course.id || course._id;
     if (!id) return;
-
     setCartItems(prev => {
       if (prev.some(item => item.id === id)) return prev;
       return [...prev, { ...course, id, addedAt: new Date().toISOString() }];
     });
   }, []);
 
-  // Remove course from cart
+  // Remove item from cart
   const removeFromCart = useCallback((courseId) => {
     setCartItems(prev => prev.filter(item => item.id !== courseId));
   }, []);
 
-  // Clear cart
+  // Clear the cart
   const clearCart = useCallback(() => {
     setCartItems([]);
     localStorage.removeItem("cart");
-    if (user && token) {
-      axios.delete("/api/cart", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).catch(err => console.error("❌ Failed to clear backend cart:", err));
-    }
-  }, [user, token]);
+  }, []);
 
-  // Helpers
-  const getCartTotal = useCallback(() => cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0), [cartItems]);
+  // Total price
+  const getCartTotal = useCallback(() =>
+    cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0),
+    [cartItems]
+  );
+
+  // Total items count
   const getCartItemsCount = useCallback(() => cartItems.length, [cartItems]);
-  const isInCart = useCallback((courseId) => cartItems.some(item => item.id === courseId), [cartItems]);
 
-  // Get related courses
+  // Check if item is in cart
+  const isInCart = useCallback((courseId) =>
+    cartItems.some(item => item.id === courseId),
+    [cartItems]
+  );
+
+  // Get related courses (pure frontend)
   const getRelatedCourses = useCallback((currentCourse, allCourses, limit = 4) => {
     const cartIds = cartItems.map(item => item.id);
     const sameCategory = allCourses
@@ -116,13 +80,14 @@ export const CartProvider = ({ children }) => {
   return (
     <CartContext.Provider value={{
       cartItems,
+      setCartItems,
       addToCart,
       removeFromCart,
       clearCart,
       getCartTotal,
       getCartItemsCount,
       isInCart,
-      getRelatedCourses,
+      getRelatedCourses, // ✅ now available
     }}>
       {children}
     </CartContext.Provider>

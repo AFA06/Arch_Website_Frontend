@@ -15,7 +15,6 @@ const ShoppingCartPage = () => {
     getCartTotal, 
     getCartItemsCount,
     getRelatedCourses,
-    refreshCartFromStorage
   } = useContext(CartContext);
   
   const navigate = useNavigate();
@@ -89,12 +88,6 @@ const ShoppingCartPage = () => {
       category: "Programming",
     },
   ], []);
-
-  // Refresh cart from localStorage when component mounts
-  useEffect(() => {
-    refreshCartFromStorage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Get related courses when cart changes
   useEffect(() => {
