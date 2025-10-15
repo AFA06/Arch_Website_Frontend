@@ -2,14 +2,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
-import { LogOut, Bell, BookOpen, Edit, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
+import ProfileSidebar from "./Profile_sidebar/profile_sidebar";
 import "./Navbar.css";
-import "./Explore_filter/explore.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
   const { getCartItemsCount } = useContext(CartContext);
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const timeoutRef = useRef(null);
 
   const courseCategories = [
     { id: 1, name: "All Courses", category: "all" },
@@ -26,11 +30,6 @@ const Navbar = () => {
     { id: 12, name: "Marketing", category: "Marketing" },
     { id: 13, name: "Project Management", category: "Project Management" },
   ];
-
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const timeoutRef = useRef(null);
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -100,7 +99,7 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="navbar-right">
-          {/* Shopping Cart */}
+          {/* Cart */}
           <Link to="/cart" className="cart-icon">
             <ShoppingCart size={24} />
             {getCartItemsCount() > 0 && (
@@ -108,6 +107,7 @@ const Navbar = () => {
             )}
           </Link>
 
+          {/* Profile / Auth */}
           {user ? (
             <div className="profile-avatar" onClick={() => setSidebarOpen(true)}>
               {user.image ? (
@@ -136,51 +136,12 @@ const Navbar = () => {
       </nav>
 
       {/* Sidebar */}
-      {user && (
-        <>
-          <div className={`sidebar-menu ${sidebarOpen ? "open" : ""}`}>
-            <div className="sidebar-header">
-              {user.image ? (
-                <img
-                  src={user.image}
-                  alt="avatar"
-                  className="sidebar-avatar-img"
-                />
-              ) : (
-                <div className="sidebar-avatar-initials">
-                  {getInitials(user.name, user.surname)}
-                </div>
-              )}
-              <div>
-                <h3>{user.name} {user.surname}</h3>
-                <p>{user.email}</p>
-              </div>
-            </div>
-
-            <div className="sidebar-links">
-              <button>
-                <BookOpen size={18} /> My Courses
-              </button>
-              <button>
-                <Bell size={18} /> Notifications
-              </button>
-              <button>
-                <Edit size={18} /> Edit Profile
-              </button>
-              <button onClick={logout} className="logout-btn">
-                <LogOut size={18} /> Log Out
-              </button>
-            </div>
-          </div>
-
-          {sidebarOpen && (
-            <div
-              className="sidebar-overlay"
-              onClick={() => setSidebarOpen(false)}
-            ></div>
-          )}
-        </>
-      )}
+      <ProfileSidebar
+        user={user}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onLogout={logout}
+      />
     </>
   );
 };
