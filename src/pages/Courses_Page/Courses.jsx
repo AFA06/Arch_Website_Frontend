@@ -230,14 +230,41 @@ export default function CoursesPage() {
       setLoading(true);
       setFetchError(null);
       try {
-        const res = await fetch("/api/courses");
-        if (!res.ok) throw new Error("Network response was not ok");
-        const data = await res.json();
+        // Fetch from our backend API
+        const res = await fetch("http://localhost:5050/api/courses");
+        if (!res.ok) throw new Error("Failed to fetch courses");
+        const response = await res.json();
+        
         if (!cancelled) {
-          setCourses(Array.isArray(data) && data.length ? data : FALLBACK_COURSES);
+          if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+            // Transform backend data to match our component format
+            const transformedCourses = response.data.map(course => ({
+              id: course._id,
+              title: course.title,
+              subtitle: course.description?.substring(0, 100) + "..." || "",
+              image: course.thumbnail ? `http://localhost:5050${course.thumbnail}` : "https://picsum.photos/seed/default/900/600",
+              price: course.price || 0,
+              priceCurrency: "UZS",
+              rating: 4.5, // Default rating
+              ratingCount: Math.floor(Math.random() * 3000) + 500,
+              students: course.studentsEnrolled || 0,
+              instructor: course.instructor || "Architecture Academy",
+              lastUpdated: new Date(course.createdAt || Date.now()).toISOString().split('T')[0],
+              category: course.category || "Architecture",
+              tags: [course.category, course.level, course.type].filter(Boolean),
+              language: "English",
+              type: course.type, // single or pack
+              videoCount: course.videos?.length || 0,
+            }));
+            setCourses(transformedCourses);
+          } else {
+            // Use fallback if no courses from backend
+            setCourses(FALLBACK_COURSES);
+          }
         }
       } catch (err) {
         if (!cancelled) {
+          console.error("Error fetching courses:", err);
           setFetchError(err.message);
           setCourses(FALLBACK_COURSES);
         }

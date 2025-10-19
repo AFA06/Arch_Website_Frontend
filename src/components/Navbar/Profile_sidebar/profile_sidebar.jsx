@@ -1,13 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { BookOpen, Bell, Edit, LogOut } from "lucide-react";
 import "./profile_sidebar.css";
 
 const ProfileSidebar = ({ user, isOpen, onClose, onLogout }) => {
+  const navigate = useNavigate();
+
   if (!user) return null;
 
   const getInitials = (name, surname) => {
     if (!name || !surname) return "?";
     return `${name[0]}${surname[0]}`.toUpperCase();
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    onClose();
   };
 
   return (
@@ -34,7 +42,7 @@ const ProfileSidebar = ({ user, isOpen, onClose, onLogout }) => {
         </div>
 
         <div className="profile-sidebar-links">
-          <button>
+          <button onClick={() => handleNavigation("/my-courses")}>
             <BookOpen size={18} /> My Courses
           </button>
           <button>
