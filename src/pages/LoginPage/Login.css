@@ -148,6 +148,54 @@
   transform: translateY(-2px);
 }
 
+/* -------------------- ERROR MESSAGES -------------------- */
+.error-alert {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.25rem;
+  color: #fca5a5;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  display: block;
+  color: #fca5a5;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.error-link {
+  background: none;
+  border: none;
+  color: #6366f1;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+  padding: 0;
+  display: inline;
+}
+
+.error-link:hover {
+  color: #818cf8;
+}
+
+input[aria-invalid="true"] {
+  border-color: #ef4444 !important;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-button:disabled:hover {
+  background: #4f46e5;
+  transform: none;
+}
+
 /* -------------------- FOOTER -------------------- */
 .login-footer {
   margin-top: 1.5rem;

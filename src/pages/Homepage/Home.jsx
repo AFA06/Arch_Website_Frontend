@@ -1,18 +1,10 @@
 // Home.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../utils/api";
 import "./Home.css";
 
-const popularCourses = [
-  { id: 1, name: "React for Beginners", students: 1245, img: "https://picsum.photos/seed/course1/400/240" },
-  { id: 2, name: "Python Data Science", students: 986, img: "https://picsum.photos/seed/course2/400/240" },
-  { id: 3, name: "UI/UX Design Masterclass", students: 1543, img: "https://picsum.photos/seed/course3/400/240" },
-  { id: 4, name: "Advanced JavaScript", students: 1120, img: "https://picsum.photos/seed/course4/400/240" },
-  { id: 5, name: "AWS Cloud Essentials", students: 870, img: "https://picsum.photos/seed/course5/400/240" },
-  { id: 6, name: "Figma Design Crash Course", students: 1420, img: "https://picsum.photos/seed/course6/400/240" },
-];
-
-const categories = ["AI", "Web Development", "Design", "Marketing", "Business", "Language"];
+const API_BASE_URL = "http://localhost:5050";
 
 
 
@@ -349,35 +341,109 @@ export default function Home() {
   const [hoveredCourse, setHoveredCourse] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [faqOpen, setFaqOpen] = useState(null);
+  
+  // Dynamic data states
+  const [featuredCourses, setFeaturedCourses] = useState([]);
+  const [popularCourses, setPopularCourses] = useState([]);
+  const [categoryCourses, setCategoryCourses] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const root = document.querySelector(".home");
     if (root) {
       setTimeout(() => root.classList.add("is-loaded"), 80);
     }
+    
+    // Fetch dynamic data from backend
+    const fetchHomeData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch featured courses (for carousel)
+        const featuredRes = await api.get("/courses?featured=true&limit=6");
+        if (featuredRes.data && featuredRes.data.data) {
+          setFeaturedCourses(featuredRes.data.data);
+        }
+        
+        // Fetch popular courses
+        const popularRes = await api.get("/courses?sort=popular&limit=4");
+        if (popularRes.data && popularRes.data.data) {
+          setPopularCourses(popularRes.data.data);
+        }
+        
+        // Fetch categories
+        const categoriesRes = await api.get("/courses/categories");
+        if (categoriesRes.data && categoriesRes.data.data) {
+          const categoryNames = categoriesRes.data.data.map(cat => cat.name || cat.title);
+          setCategories(["All", ...categoryNames]);
+        }
+        
+        // Fetch category courses (for filtered section)
+        const allCoursesRes = await api.get("/courses?limit=4");
+        if (allCoursesRes.data && allCoursesRes.data.data) {
+          setCategoryCourses(allCoursesRes.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching home data:", error);
+        // Keep using fallback data if API fails
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchHomeData();
   }, []);
 
-  const totalSlides = Math.ceil(popularCourses.length / 3);
-  const handleNext = () => setCarouselIndex((prev) => (prev + 1) % totalSlides);
-  const handlePrev = () => setCarouselIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  // Fetch courses by category when activeCategory changes
+  useEffect(() => {
+    const fetchCategoryCourses = async () => {
+      if (activeCategory === "All") {
+        try {
+          const res = await api.get("/courses?limit=4");
+          if (res.data && res.data.data) {
+            setCategoryCourses(res.data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      } else {
+        try {
+          const res = await api.get(`/courses?category=${encodeURIComponent(activeCategory)}&limit=4`);
+          if (res.data && res.data.data) {
+            setCategoryCourses(res.data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching category courses:", error);
+        }
+      }
+    };
+    
+    fetchCategoryCourses();
+  }, [activeCategory]);
 
-  // Convert USD price to UZS (approximate rate: 1 USD = 12,500 UZS)
-  const convertToUZS = (priceStr) => {
-    const price = parseFloat(priceStr.replace('$', ''));
-    const uzsPrice = Math.round(price * 12500);
-    return uzsPrice.toLocaleString() + ' UZS';
+  const totalSlides = Math.ceil(featuredCourses.length / 3);
+  const handleNext = () => setCarouselIndex((prev) => (prev + 1) % (totalSlides || 1));
+  const handlePrev = () => setCarouselIndex((prev) => (prev - 1 + (totalSlides || 1)) % (totalSlides || 1));
+
+  // Format price to UZS
+  const formatPriceUZS = (price) => {
+    if (typeof price === 'number') {
+      return price.toLocaleString('uz-UZ') + ' UZS';
+    }
+    return '0 UZS';
   };
+  
   const getVisibleCourses = () => {
     const start = carouselIndex * 3;
-    return popularCourses.slice(start, start + 3);
+    return featuredCourses.slice(start, start + 3);
   };
 
-  const filteredCourses = activeCategory === "All"
-    ? allCourses
-    : allCourses.filter(course => course.category === activeCategory);
-
-  // Popular courses sorted by students (used for "Popular Courses" section)
-  const sortedPopular = [...allCourses].sort((a, b) => b.students - a.students).slice(0, 6);
+  const getCourseImage = (thumbnail) => {
+    if (!thumbnail) return "https://picsum.photos/seed/default/400/240";
+    if (thumbnail.startsWith('http')) return thumbnail;
+    return `${API_BASE_URL}${thumbnail}`;
+  };
 
   const toggleFaq = (idx) => {
     setFaqOpen((prev) => (prev === idx ? null : idx));
@@ -422,15 +488,21 @@ export default function Home() {
           </div>
           <div className="carousel-right">
             <div className="carousel-cards">
-              {getVisibleCourses().map((course) => (
-                <div key={course.id} className="carousel-card">
-                  <img src={course.img} alt={course.name} />
-                  <div className="carousel-info">
-                    <h3>{course.name}</h3>
-                    <span>👤 {course.students.toLocaleString()} students</span>
+              {loading ? (
+                <div className="loading-skeleton">Loading courses...</div>
+              ) : getVisibleCourses().length > 0 ? (
+                getVisibleCourses().map((course) => (
+                  <div key={course._id || course.id} className="carousel-card" onClick={() => navigate(`/courses/${course.slug || course._id}`)}>
+                    <img src={getCourseImage(course.thumbnail)} alt={course.title} />
+                    <div className="carousel-info">
+                      <h3>{course.title}</h3>
+                      <span>👤 {(course.studentsEnrolled || 0).toLocaleString()} students</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="no-courses">No featured courses available</p>
+              )}
             </div>
             <div className="carousel-controls">
               <button className="carousel-arrow" onClick={handlePrev}>
@@ -483,65 +555,63 @@ export default function Home() {
 
   {/* COURSES GRID */}
   <div className="courses-grid">
-    {filteredCourses.slice(0, 4).map((course, index) => {
-      // Determine number of columns based on screen width
-      let columns = 4;
-      if (window.innerWidth <= 600) columns = 1;
-      else if (window.innerWidth <= 900) columns = 2;
-      else if (window.innerWidth <= 1200) columns = 3;
+    {loading ? (
+      <div className="loading-skeleton">Loading courses...</div>
+    ) : categoryCourses.length > 0 ? (
+      categoryCourses.slice(0, 4).map((course, index) => {
+        // Determine number of columns based on screen width
+        let columns = 4;
+        if (window.innerWidth <= 600) columns = 1;
+        else if (window.innerWidth <= 900) columns = 2;
+        else if (window.innerWidth <= 1200) columns = 3;
 
-      const isLastColumn = (index + 1) % columns === 0;
+        const isLastColumn = (index + 1) % columns === 0;
 
-      return (
-        <div
-          key={course.id}
-          className="course-card"
-          onMouseEnter={() => setHoveredCourse(course.id)}
-          onMouseLeave={() => setHoveredCourse(null)}
-        >
-          <img src={course.image} alt={course.title} />
-          <div className="course-info">
-            <h3>{course.title}</h3>
-            <div className="course-meta">
-              <span className="course-price">{convertToUZS(course.price)}</span>
-              <span>{course.students.toLocaleString()} students</span>
+        return (
+          <div
+            key={course._id || course.id}
+            className="course-card"
+            onMouseEnter={() => setHoveredCourse(course._id || course.id)}
+            onMouseLeave={() => setHoveredCourse(null)}
+          >
+            <img src={getCourseImage(course.thumbnail)} alt={course.title} />
+            <div className="course-info">
+              <h3>{course.title}</h3>
+              <div className="course-meta">
+                <span className="course-price">{formatPriceUZS(course.price)}</span>
+                <span>{(course.studentsEnrolled || 0).toLocaleString()} students</span>
+              </div>
+              <button 
+                className="see-course-btn"
+                onClick={() => navigate(`/courses/${course.slug || course._id}`)}
+              >
+                See Course
+              </button>
             </div>
-            <button 
-              className="see-course-btn"
-              onClick={() => navigate('/courses')}
-            >
-              See Course
-            </button>
+
+            {hoveredCourse === (course._id || course.id) && (
+              <div className={`course-popup ${isLastColumn ? "left" : ""}`}>
+                <h4>{course.title}</h4>
+                {course.isFeatured && <span className="badge">Featured</span>}
+                <p className="update">
+                  Updated <strong>{new Date(course.updatedAt || Date.now()).toLocaleDateString()}</strong>
+                </p>
+                <p className="details">
+                  <strong>{course.totalDuration || "N/A"}</strong> • {course.level || "All Levels"}
+                </p>
+                <p className="desc">{course.description}</p>
+              </div>
+            )}
           </div>
-
-          {hoveredCourse === course.id && (
-            <div className={`course-popup ${isLastColumn ? "left" : ""}`}>
-              <h4>{course.title}</h4>
-              {course.bestseller && <span className="badge">Bestseller</span>}
-              <p className="update">
-                Updated <strong>{course.updated}</strong>
-              </p>
-              <p className="details">
-                <strong>{course.duration}</strong> • {course.level}{" "}
-                {course.subtitles && "• Subtitles"}
-              </p>
-              <p className="desc">{course.description}</p>
-              <ul>
-                {course.highlights.map((item, idx) => (
-                  <li key={idx}>
-                    <strong>{item}</strong>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      );
-    })}
+        );
+      })
+    ) : (
+      <p className="no-courses">No courses available</p>
+    )}
   </div>
 
   {/* SHOW ALL COURSES LINK UNDER FIRST CARD */}
-  {filteredCourses.length > 0 && (
+  {categoryCourses.length > 0 && (
     <div className="show-all-wrapper">
       <a href="/courses" className="show-all-link">
         {activeCategory === "All"
@@ -612,27 +682,32 @@ export default function Home() {
   </div>
 
   <div className="popular-courses-grid">
-    {sortedPopular.slice(0, 4).map((course) => (
-      <div key={course.id} className="popular-course-card">
-        <img src={course.image} alt={course.title} className="popular-course-image" />
-        <div className="popular-course-info">
-          <h3 className="popular-course-title">{course.title}</h3>
-          <div className="popular-course-price">{course.price.replace('$', '').replace('.99', '000 UZS')}</div>
-          <div className="popular-course-stats">
-            {course.students.toLocaleString()} students
+    {loading ? (
+      <div className="loading-skeleton">Loading popular courses...</div>
+    ) : popularCourses.length > 0 ? (
+      popularCourses.slice(0, 4).map((course) => (
+        <div key={course._id || course.id} className="popular-course-card">
+          <img src={getCourseImage(course.thumbnail)} alt={course.title} className="popular-course-image" />
+          <div className="popular-course-info">
+            <h3 className="popular-course-title">{course.title}</h3>
+            <div className="popular-course-price">{formatPriceUZS(course.price)}</div>
+            <div className="popular-course-stats">
+              {(course.studentsEnrolled || 0).toLocaleString()} students
+            </div>
+            <button 
+              className="btn enroll-btn"
+              onClick={() => {
+                navigate(`/courses/${course.slug || course._id}`);
+              }}
+            >
+              Enroll
+            </button>
           </div>
-          <button 
-            className="btn enroll-btn"
-            onClick={() => {
-              // Navigate to courses page with category filter
-              navigate(`/courses?category=${encodeURIComponent(course.category)}`);
-            }}
-          >
-            Enroll
-          </button>
         </div>
-      </div>
-    ))}
+      ))
+    ) : (
+      <p className="no-courses">No popular courses available</p>
+    )}
   </div>
 </section>
 

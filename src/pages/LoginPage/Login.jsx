@@ -11,9 +11,13 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "", general: "" });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear errors when user starts typing
+    setErrors({ email: "", password: "", general: "" });
   };
 
   const togglePassword = () => {
@@ -22,7 +26,21 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({ email: "", password: "", general: "" });
+    
+    // Client-side validation
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
+      setErrors({ ...errors, email: "Please enter a valid email address" });
+      return;
+    }
+    
+    if (!form.password) {
+      setErrors({ ...errors, password: "Password is required" });
+      return;
+    }
+    
     try {
+      setIsLoading(true);
       const res = await api.post("/auth/login", form);
       const data = res.data;
 
@@ -48,7 +66,25 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || err.message || "Invalid email or password");
+      const status = err.response?.status;
+      const message = err.response?.data?.message || err.message;
+      
+      // Handle specific error cases
+      if (status === 404 || message.toLowerCase().includes("not found") || message.toLowerCase().includes("user does not exist")) {
+        setErrors({ ...errors, general: "account-not-found" });
+        toast.error("Account not found. Please sign up first.");
+      } else if (status === 401 || message.toLowerCase().includes("password") || message.toLowerCase().includes("incorrect")) {
+        setErrors({ ...errors, password: "Incorrect password" });
+        toast.error("Incorrect password. Please try again.");
+      } else if (status === 400) {
+        setErrors({ ...errors, general: "validation-error" });
+        toast.error(message || "Please check your input and try again.");
+      } else {
+        setErrors({ ...errors, general: "server-error" });
+        toast.error("Something went wrong. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,6 +100,18 @@ const Login = () => {
 
         {/* FORM */}
         <form onSubmit={handleSubmit}>
+          {/* General error message */}
+          {errors.general === "account-not-found" && (
+            <div className="error-alert" role="alert" aria-live="polite">
+              <p>Account not found. Please <button type="button" onClick={() => navigate("/signup")} className="error-link">sign up</button> first.</p>
+            </div>
+          )}
+          {errors.general === "server-error" && (
+            <div className="error-alert" role="alert" aria-live="polite">
+              <p>Something went wrong. Please try again later.</p>
+            </div>
+          )}
+          
           <div className="form-group">
             <label>Email</label>
             <input
@@ -73,7 +121,12 @@ const Login = () => {
               onChange={handleChange}
               placeholder="you@example.com"
               required
+              aria-invalid={errors.email ? "true" : "false"}
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
+            {errors.email && (
+              <span id="email-error" className="error-message" role="alert">{errors.email}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -86,15 +139,23 @@ const Login = () => {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
+                aria-invalid={errors.password ? "true" : "false"}
+                aria-describedby={errors.password ? "password-error" : undefined}
               />
               <button
                 type="button"
                 className="password-toggle"
                 onClick={togglePassword}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {errors.password && (
+              <span id="password-error" className="error-message" role="alert">
+                {errors.password}. <button type="button" onClick={() => navigate("/forgot-password")} className="error-link">Reset password</button>
+              </span>
+            )}
           </div>
 
           <div className="forgot-password">
@@ -103,8 +164,8 @@ const Login = () => {
             </button>
           </div>
 
-          <button type="submit" className="login-button">
-            Log In
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Log In"}
           </button>
         </form>
 

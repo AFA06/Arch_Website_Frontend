@@ -177,7 +177,6 @@ const CoursePlayer = () => {
                   onEnded={handleVideoEnd}
                   onError={handleVideoError}
                   className="video-player"
-                  autoPlay
                 >
                   <source src={currentVideo.url.startsWith('http') ? currentVideo.url : `http://localhost:5050${currentVideo.url}`} type="video/mp4" />
                   Your browser does not support the video tag.

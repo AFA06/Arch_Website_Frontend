@@ -78,6 +78,13 @@
   color: #fff;
 }
 
+.explore-loading {
+  padding: 12px 14px;
+  color: #999;
+  text-align: center;
+  font-size: 14px;
+}
+
 /* Search */
 .navbar-search input {
   width: 320px;
@@ -138,24 +145,38 @@
 /* Profile Avatar */
 .profile-avatar {
   cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease;
 }
 
-.avatar-circle,
-.avatar-circle-img {
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+.avatar-circle {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #444;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  border: 2px solid #6366f1;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+  user-select: none;
 }
 
-.avatar-circle-img {
-  object-fit: cover;
+.avatar-circle:hover {
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transform: scale(1.05);
 }
 
 /* Auth Buttons */

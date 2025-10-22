@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState, useRef } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import ProfileSidebar from "./Profile_sidebar/profile_sidebar";
+import api from "../../utils/api";
+import { getImageUrl, getUserInitials } from "../../utils/imageUtils";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -13,23 +15,39 @@ const Navbar = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [courseCategories, setCourseCategories] = useState([
+    { id: "all", name: "All Courses", slug: "all" }
+  ]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const timeoutRef = useRef(null);
 
-  const courseCategories = [
-    { id: 1, name: "All Courses", category: "all" },
-    { id: 2, name: "AI", category: "AI" },
-    { id: 3, name: "Design", category: "Design" },
-    { id: 4, name: "Architecture", category: "Architecture" },
-    { id: 5, name: "3D Modeling", category: "3D Modeling" },
-    { id: 6, name: "Programming", category: "Programming" },
-    { id: 7, name: "Business", category: "Business" },
-    { id: 8, name: "Data Science", category: "Data Science" },
-    { id: 9, name: "Mobile Development", category: "Mobile Development" },
-    { id: 10, name: "Cybersecurity", category: "Cybersecurity" },
-    { id: 11, name: "Cloud Computing", category: "Cloud Computing" },
-    { id: 12, name: "Marketing", category: "Marketing" },
-    { id: 13, name: "Project Management", category: "Project Management" },
-  ];
+  // Fetch categories from backend
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setCategoriesLoading(true);
+        const response = await api.get("/courses/categories");
+        if (response.data && response.data.data) {
+          const categories = [
+            { id: "all", name: "All Courses", slug: "all" },
+            ...response.data.data.map(cat => ({
+              id: cat._id || cat.id,
+              name: cat.name || cat.title,
+              slug: cat.slug || cat.name
+            }))
+          ];
+          setCourseCategories(categories);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        // Keep default categories on error
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -42,18 +60,17 @@ const Navbar = () => {
     }, 300);
   };
 
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (slug) => {
     const url =
-      category === "all"
+      slug === "all"
         ? "/courses"
-        : `/courses?category=${encodeURIComponent(category)}`;
+        : `/courses?category=${encodeURIComponent(slug)}`;
     navigate(url);
     setDropdownOpen(false);
   };
 
   const getInitials = (name, surname) => {
-    if (!name || !surname) return "?";
-    return `${name[0]}${surname[0]}`.toUpperCase();
+    return getUserInitials(name, surname);
   };
 
   return (
@@ -74,15 +91,19 @@ const Navbar = () => {
             <span className="explore-link">Explore</span>
             {dropdownOpen && (
               <div className="explore-dropdown">
-                {courseCategories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => handleCategoryClick(category.category)}
-                    className="explore-item"
-                  >
-                    {category.name}
-                  </button>
-                ))}
+                {categoriesLoading ? (
+                  <div className="explore-loading">Loading...</div>
+                ) : (
+                  courseCategories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => handleCategoryClick(category.slug)}
+                      className="explore-item"
+                    >
+                      {category.name}
+                    </button>
+                  ))
+                )}
               </div>
             )}
           </div>
@@ -110,17 +131,9 @@ const Navbar = () => {
           {/* Profile / Auth */}
           {user ? (
             <div className="profile-avatar" onClick={() => setSidebarOpen(true)}>
-              {user.image ? (
-                <img
-                  src={user.image}
-                  alt="profile"
-                  className="avatar-circle-img"
-                />
-              ) : (
-                <div className="avatar-circle">
-                  {getInitials(user.name, user.surname)}
-                </div>
-              )}
+              <div className="avatar-circle">
+                {getInitials(user.name, user.surname)}
+              </div>
             </div>
           ) : (
             <div className="auth-buttons">
