@@ -2,9 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Bell } from "lucide-react";
 import ProfileSidebar from "./Profile_sidebar/profile_sidebar";
 import Avatar from "../Avatar/Avatar";
+import Notification from "./Notification/notification.jsx";
+
+
+ // ✅ Correct path
 import api from "../../utils/api";
 import "./Navbar.css";
 
@@ -15,12 +19,14 @@ const Navbar = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false); // For notifications dropdown
   const [courseCategories, setCourseCategories] = useState([
     { id: "all", name: "All Courses", slug: "all" }
   ]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const timeoutRef = useRef(null);
 
+  // Fetch course categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -69,6 +75,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
+        {/* Left Section */}
         <div className="navbar-left">
           <Link to="/" className="navbar-logo">MAVA Academy</Link>
 
@@ -100,11 +107,14 @@ const Navbar = () => {
           <Link to="/courses" className="navbar-link">Courses</Link>
         </div>
 
+        {/* Center Search */}
         <div className="navbar-search">
           <input type="text" placeholder="Search for courses..." />
         </div>
 
+        {/* Right Section */}
         <div className="navbar-right">
+          {/* Cart */}
           <Link to="/cart" className="cart-icon">
             <ShoppingCart size={24} />
             {getCartItemsCount() > 0 && (
@@ -112,6 +122,16 @@ const Navbar = () => {
             )}
           </Link>
 
+          {/* Notification Bell */}
+          <div
+            className="notification-bell"
+            onClick={() => setNotifOpen(!notifOpen)}
+          >
+            <Bell size={24} />
+            {notifOpen && <Notification />}
+          </div>
+
+          {/* User / Auth Buttons */}
           {user ? (
             <div className="navbar-avatar">
               <Avatar
@@ -129,6 +149,7 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* Profile Sidebar */}
       <ProfileSidebar
         user={user}
         isOpen={sidebarOpen}

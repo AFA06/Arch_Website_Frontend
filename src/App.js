@@ -41,33 +41,33 @@ function App() {
           <CartProvider>
             <Layout>
               <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/courses" element={<Courses />} />
-              <Route path="/courses/:id" element={<CourseDetail />} />
-              <Route path="/cart" element={<ShoppingCart />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              
-              {/* Protected Routes */}
-              <Route
-                path="/my-courses"
-                element={
-                  <ProtectedRoute>
-                    <MyCourses />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/course/:slug"
-                element={
-                  <ProtectedRoute>
-                    <CoursePlayer />
-                  </ProtectedRoute>
-                }
-              />
+                <Route path="/" element={<Home />} />
+                <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:id" element={<CourseDetail />} />
+                <Route path="/cart" element={<ShoppingCart />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
 
-              {/* 404 Catch-all Route */}
-              <Route path="*" element={<NotFound />} />
+                {/* Protected Routes */}
+                <Route
+                  path="/my-courses"
+                  element={
+                    <ProtectedRoute>
+                      <MyCourses />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/course/:slug"
+                  element={
+                    <ProtectedRoute>
+                      <CoursePlayer />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* 404 Catch-all Route */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>
           </CartProvider>

@@ -48,7 +48,8 @@ const ProfileEdit = ({ isOpen, onClose }) => {
     { id: "uppercase", label: "One uppercase letter", test: (pwd) => /[A-Z]/.test(pwd) },
     { id: "lowercase", label: "One lowercase letter", test: (pwd) => /[a-z]/.test(pwd) },
     { id: "number", label: "One number", test: (pwd) => /\d/.test(pwd) },
-    { id: "special", label: "One special character", test: (pwd) => /[!@#$%^&*(),.?\":{}|<>]/.test(pwd) },
+    { id: "special", label: "One special character", test: (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd) },
+
   ];
 
   const getPasswordStrength = (password) => {
