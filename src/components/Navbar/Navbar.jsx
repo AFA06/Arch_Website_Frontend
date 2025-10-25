@@ -2,13 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
-import { ShoppingCart, Bell } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import ProfileSidebar from "./Profile_sidebar/profile_sidebar";
 import Avatar from "../Avatar/Avatar";
 import Notification from "./Notification/notification.jsx";
 
-
- // ✅ Correct path
 import api from "../../utils/api";
 import "./Navbar.css";
 
@@ -19,10 +17,7 @@ const Navbar = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false); // For notifications dropdown
-  const [courseCategories, setCourseCategories] = useState([
-    { id: "all", name: "All Courses", slug: "all" }
-  ]);
+  const [courseCategories, setCourseCategories] = useState([{ id: "all", name: "All Courses", slug: "all" }]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const timeoutRef = useRef(null);
 
@@ -64,10 +59,7 @@ const Navbar = () => {
   };
 
   const handleCategoryClick = (slug) => {
-    const url =
-      slug === "all"
-        ? "/courses"
-        : `/courses?category=${encodeURIComponent(slug)}`;
+    const url = slug === "all" ? "/courses" : `/courses?category=${encodeURIComponent(slug)}`;
     navigate(url);
     setDropdownOpen(false);
   };
@@ -122,14 +114,8 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Notification Bell */}
-          <div
-            className="notification-bell"
-            onClick={() => setNotifOpen(!notifOpen)}
-          >
-            <Bell size={24} />
-            {notifOpen && <Notification />}
-          </div>
+          {/* Notification (premium) */}
+          <Notification />
 
           {/* User / Auth Buttons */}
           {user ? (

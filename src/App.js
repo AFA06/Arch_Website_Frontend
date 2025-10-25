@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { NotificationProvider } from "./context/NotificationContext"; // ← Added
 
 // Layout Components
 import Navbar from "./components/Navbar/Navbar";
@@ -20,6 +21,7 @@ import MyCourses from "./pages/MyCourses/MyCourses";
 import CoursePlayer from "./pages/CoursePlayer/CoursePlayer";
 import NotFound from "./pages/NotFound";
 
+// Layout wrapper to hide Navbar/Footer on login/signup pages
 function Layout({ children }) {
   const location = useLocation();
   const hideLayout = ["/login", "/signup"].includes(location.pathname);
@@ -27,7 +29,7 @@ function Layout({ children }) {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {!hideLayout && <Navbar />}
-      <div style={{ flex: 1 }}>{children}</div>
+      <main style={{ flex: 1 }}>{children}</main>
       {!hideLayout && <Footer />}
     </div>
   );
@@ -38,39 +40,42 @@ function App() {
     <ErrorBoundary>
       <Router>
         <AuthProvider>
-          <CartProvider>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:id" element={<CourseDetail />} />
-                <Route path="/cart" element={<ShoppingCart />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
+          <NotificationProvider> {/* ← Wrap everything that may use notifications */}
+            <CartProvider>
+              <Layout>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/courses/:id" element={<CourseDetail />} />
+                  <Route path="/cart" element={<ShoppingCart />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
 
-                {/* Protected Routes */}
-                <Route
-                  path="/my-courses"
-                  element={
-                    <ProtectedRoute>
-                      <MyCourses />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/course/:slug"
-                  element={
-                    <ProtectedRoute>
-                      <CoursePlayer />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Protected Routes */}
+                  <Route
+                    path="/my-courses"
+                    element={
+                      <ProtectedRoute>
+                        <MyCourses />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/course/:slug"
+                    element={
+                      <ProtectedRoute>
+                        <CoursePlayer />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* 404 Catch-all Route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          </CartProvider>
+                  {/* 404 Not Found */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Layout>
+            </CartProvider>
+          </NotificationProvider>
         </AuthProvider>
       </Router>
     </ErrorBoundary>

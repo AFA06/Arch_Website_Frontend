@@ -1,24 +1,25 @@
+// src/context/NotificationContext.js
 import { createContext, useContext, useState, useEffect } from "react";
+import io from "socket.io-client";
+import { useAuth } from "./AuthContext";
 import api from "../utils/api";
-import { AuthContext } from "./AuthContext";
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch notifications when user changes
   useEffect(() => {
-    if (!user) return;
+    if (!user || !token) return;
+
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        const res = await api.get("/notifications"); // backend endpoint
-        if (res.data && res.data.data) {
-          setNotifications(res.data.data);
-        }
+        // ✅ fixed: removed extra slash
+        const res = await api.get("admin/announcements");
+        if (res.data?.data) setNotifications(res.data.data);
       } catch (err) {
         console.error("Failed to fetch notifications:", err);
       } finally {
@@ -27,11 +28,25 @@ export const NotificationProvider = ({ children }) => {
     };
 
     fetchNotifications();
-  }, [user]);
 
+    const socket = io("http://localhost:5050", { auth: { token } });
+
+    socket.on("connect", () =>
+      console.log("Connected to notifications socket:", socket.id)
+    );
+
+    socket.on("newNotification", (notif) =>
+      setNotifications((prev) => [notif, ...prev])
+    );
+
+    return () => socket.disconnect();
+  }, [user, token]);
+
+  // Mark single notification as read
   const markAsRead = async (id) => {
     try {
-      await api.put(`/notifications/${id}/read`);
+      // ✅ fixed: removed extra slash
+      await api.put(`admin/announcements/${id}/read`);
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, read: true } : n))
       );
@@ -40,15 +55,43 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      // ✅ fixed: removed extra slash
+      await Promise.all(
+        notifications
+          .filter((n) => !n.read)
+          .map((n) => api.put(`admin/announcements/${n._id}/read`))
+      );
+
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (err) {
+      console.error("Failed to mark all notifications as read:", err);
+    }
+  };
+
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <NotificationContext.Provider
-      value={{ notifications, setNotifications, markAsRead, unreadCount, loading }}
+      value={{
+        notifications,
+        setNotifications,
+        markAsRead,
+        markAllAsRead,
+        unreadCount,
+        loading,
+      }}
     >
       {children}
     </NotificationContext.Provider>
   );
 };
 
-export const useNotifications = () => useContext(NotificationContext);
+export const useNotifications = () => {
+  const context = useContext(NotificationContext);
+  if (!context)
+    throw new Error("useNotifications must be used within a NotificationProvider");
+  return context;
+};

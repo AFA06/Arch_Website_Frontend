@@ -1,5 +1,5 @@
 // src/context/AuthContext.jsx
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import api from "../utils/api";
 
 export const AuthContext = createContext();
@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load user and token from localStorage
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem("user");
@@ -21,7 +20,6 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error loading auth state:", error);
-      // Clear corrupted data
       localStorage.removeItem("user");
       localStorage.removeItem("token");
     } finally {
@@ -29,10 +27,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Refresh user data from server
   const refreshUser = async () => {
     if (!token) return;
-
     try {
       const response = await api.get("/user/profile");
       if (response.data.success) {
@@ -41,11 +37,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(updatedUser));
       }
     } catch (error) {
-      console.error("Error refreshing user data:", error);
-      // If unauthorized, logout
-      if (error.response?.status === 401) {
-        logout();
-      }
+      if (error.response?.status === 401) logout();
     }
   };
 
@@ -57,10 +49,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
     setUser(null);
     setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   const updateUser = (userData) => {
@@ -69,16 +61,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      token,
-      loading,
-      login,
-      logout,
-      updateUser,
-      refreshUser
-    }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, logout, updateUser, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
+};
+
+// ✅ Custom hook for easier usage
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  return context;
 };
