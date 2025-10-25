@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Bell, Edit, LogOut } from "lucide-react";
 import ProfileEdit from "../../ProfileEdit/ProfileEdit";
-import { getImageUrl, getUserInitials } from "../../../utils/imageUtils";
+import Avatar from "../../Avatar/Avatar";
 import "./profile_sidebar.css";
 
 const ProfileSidebar = ({ user, isOpen, onClose, onLogout }) => {
@@ -11,9 +11,6 @@ const ProfileSidebar = ({ user, isOpen, onClose, onLogout }) => {
 
   if (!user) return null;
 
-  const getInitials = (name, surname) => {
-    return getUserInitials(name, surname);
-  };
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -25,9 +22,13 @@ const ProfileSidebar = ({ user, isOpen, onClose, onLogout }) => {
       {/* Sidebar */}
       <div className={`profile-sidebar ${isOpen ? "open" : ""}`}>
         <div className="profile-sidebar-header">
-          <div className="profile-sidebar-avatar-initials">
-            {getInitials(user.name, user.surname)}
-          </div>
+        <Avatar
+          key="sidebar-avatar"
+          user={user}
+          size="large"
+          className="sidebar-avatar"
+        />
+
 
           <div>
             <h3>{user.name} {user.surname}</h3>

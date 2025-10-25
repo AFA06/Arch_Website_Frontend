@@ -7,6 +7,7 @@ import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Pages
 import Home from "./pages/Homepage/Home";
@@ -17,6 +18,7 @@ import Signup from "./pages/LoginPage/Signup";
 import ShoppingCart from "./components/Navbar/Basked/ShoppingCart";
 import MyCourses from "./pages/MyCourses/MyCourses";
 import CoursePlayer from "./pages/CoursePlayer/CoursePlayer";
+import NotFound from "./pages/NotFound";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -33,11 +35,12 @@ function Layout({ children }) {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <CartProvider>
-          <Layout>
-            <Routes>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <CartProvider>
+            <Layout>
+              <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/courses/:id" element={<CourseDetail />} />
@@ -62,11 +65,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-            </Routes>
-          </Layout>
-        </CartProvider>
-      </AuthProvider>
-    </Router>
+
+              {/* 404 Catch-all Route */}
+              <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+          </CartProvider>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

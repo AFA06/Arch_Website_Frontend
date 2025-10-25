@@ -1,5 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from "react";
+import api from "../utils/api";
 
 export const AuthContext = createContext();
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const savedUser = localStorage.getItem("user");
       const savedToken = localStorage.getItem("token");
-      
+
       if (savedUser && savedToken) {
         setUser(JSON.parse(savedUser));
         setToken(savedToken);
@@ -27,6 +28,26 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  // Refresh user data from server
+  const refreshUser = async () => {
+    if (!token) return;
+
+    try {
+      const response = await api.get("/user/profile");
+      if (response.data.success) {
+        const updatedUser = response.data.data || response.data.user;
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error("Error refreshing user data:", error);
+      // If unauthorized, logout
+      if (error.response?.status === 401) {
+        logout();
+      }
+    }
+  };
 
   const login = (userData, authToken) => {
     setUser(userData);
@@ -48,7 +69,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser }}>
+    <AuthContext.Provider value={{
+      user,
+      token,
+      loading,
+      login,
+      logout,
+      updateUser,
+      refreshUser
+    }}>
       {children}
     </AuthContext.Provider>
   );

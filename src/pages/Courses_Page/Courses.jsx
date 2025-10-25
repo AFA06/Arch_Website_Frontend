@@ -527,19 +527,6 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          <div className="filter-group">
-            <h4>Other</h4>
-            <div className="other-row">
-              <label className="checkbox-inline">
-                <input type="checkbox" checked={false} onChange={() => {}} disabled />
-                New &amp; trending (coming soon)
-              </label>
-              <label className="checkbox-inline">
-                <input type="checkbox" checked={false} onChange={() => {}} disabled />
-                Certificate included (coming soon)
-              </label>
-            </div>
-          </div>
         </aside>
 
         <main className="courses-main">

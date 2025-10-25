@@ -9,7 +9,6 @@ const MyCourses = () => {
   const navigate = useNavigate();
   const [myCourses, setMyCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // Fetch user's courses from backend
   useEffect(() => {
@@ -23,8 +22,7 @@ const MyCourses = () => {
         }
       } catch (err) {
         console.error("Error fetching courses:", err);
-        setError(err.response?.data?.message || "Failed to load courses");
-        
+
         // If unauthorized, redirect to login
         if (err.response?.status === 401) {
           navigate("/login");

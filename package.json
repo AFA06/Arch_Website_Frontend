@@ -2,7 +2,7 @@
   "name": "architecture-academy-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://AFA06.github.io/Arch_Website_Frontend",
+  "homepage": ".",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",

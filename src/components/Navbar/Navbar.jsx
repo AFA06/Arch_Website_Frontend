@@ -4,8 +4,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { CartContext } from "../../context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import ProfileSidebar from "./Profile_sidebar/profile_sidebar";
+import Avatar from "../Avatar/Avatar";
 import api from "../../utils/api";
-import { getImageUrl, getUserInitials } from "../../utils/imageUtils";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -21,7 +21,6 @@ const Navbar = () => {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const timeoutRef = useRef(null);
 
-  // Fetch categories from backend
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -40,12 +39,10 @@ const Navbar = () => {
         }
       } catch (error) {
         console.error("Failed to fetch categories:", error);
-        // Keep default categories on error
       } finally {
         setCategoriesLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
@@ -69,20 +66,12 @@ const Navbar = () => {
     setDropdownOpen(false);
   };
 
-  const getInitials = (name, surname) => {
-    return getUserInitials(name, surname);
-  };
-
   return (
     <>
       <nav className="navbar">
-        {/* Left Section */}
         <div className="navbar-left">
-          <Link to="/" className="navbar-logo">
-            MAVA Academy
-          </Link>
+          <Link to="/" className="navbar-logo">MAVA Academy</Link>
 
-          {/* Explore Dropdown */}
           <div
             className="explore-container"
             onMouseEnter={handleMouseEnter}
@@ -108,19 +97,14 @@ const Navbar = () => {
             )}
           </div>
 
-          <Link to="/courses" className="navbar-link">
-            Courses
-          </Link>
+          <Link to="/courses" className="navbar-link">Courses</Link>
         </div>
 
-        {/* Search */}
         <div className="navbar-search">
           <input type="text" placeholder="Search for courses..." />
         </div>
 
-        {/* Right Section */}
         <div className="navbar-right">
-          {/* Cart */}
           <Link to="/cart" className="cart-icon">
             <ShoppingCart size={24} />
             {getCartItemsCount() > 0 && (
@@ -128,27 +112,23 @@ const Navbar = () => {
             )}
           </Link>
 
-          {/* Profile / Auth */}
           {user ? (
-            <div className="profile-avatar" onClick={() => setSidebarOpen(true)}>
-              <div className="avatar-circle">
-                {getInitials(user.name, user.surname)}
-              </div>
+            <div className="navbar-avatar">
+              <Avatar
+                user={user}
+                size="navbar"
+                onClick={() => setSidebarOpen(true)}
+              />
             </div>
           ) : (
             <div className="auth-buttons">
-              <Link to="/login" className="btn auth-btn">
-                Login
-              </Link>
-              <Link to="/signup" className="btn auth-btn">
-                Sign Up
-              </Link>
+              <Link to="/login" className="btn auth-btn">Login</Link>
+              <Link to="/signup" className="btn auth-btn">Sign Up</Link>
             </div>
           )}
         </div>
       </nav>
 
-      {/* Sidebar */}
       <ProfileSidebar
         user={user}
         isOpen={sidebarOpen}

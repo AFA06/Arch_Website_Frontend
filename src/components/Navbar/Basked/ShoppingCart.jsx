@@ -7,12 +7,13 @@ import "./ShoppingCart.css";
 
 const ShoppingCartPage = () => {
   const { user } = useContext(AuthContext);
-  const { 
-    cartItems, 
+  const {
+    cartItems,
+    rawCartItems,
     addToCart,
-    removeFromCart, 
-    clearCart, 
-    getCartTotal, 
+    removeFromCart,
+    clearCart,
+    getCartTotal,
     getCartItemsCount,
     getRelatedCourses,
   } = useContext(CartContext);
@@ -106,7 +107,7 @@ const ShoppingCartPage = () => {
 
     const courseNames = cartItems.map(course => course.title).join(", ");
     const totalPrice = getCartTotal();
-    const currency = cartItems[0]?.priceCurrency || "UZS";
+    const currency = rawCartItems[0]?.priceCurrency || "UZS";
     
     const message = `Hi! I'd like to purchase the following courses:\n\n${courseNames}\n\nTotal: ${totalPrice.toLocaleString()} ${currency}\n\nPlease provide payment details.`;
     const telegramUrl = `https://t.me/abdukarimov_arch?text=${encodeURIComponent(message)}`;
@@ -223,12 +224,12 @@ const ShoppingCartPage = () => {
               
               <div className="summary-line">
                 <span>Courses ({getCartItemsCount()})</span>
-                <span>{getCartTotal().toLocaleString()} {cartItems[0]?.priceCurrency || "UZS"}</span>
+                <span>{getCartTotal().toLocaleString()} {rawCartItems[0]?.priceCurrency || "UZS"}</span>
               </div>
-              
+
               <div className="summary-line total">
                 <span>Total</span>
-                <span>{getCartTotal().toLocaleString()} {cartItems[0]?.priceCurrency || "UZS"}</span>
+                <span>{getCartTotal().toLocaleString()} {rawCartItems[0]?.priceCurrency || "UZS"}</span>
               </div>
 
               <button 

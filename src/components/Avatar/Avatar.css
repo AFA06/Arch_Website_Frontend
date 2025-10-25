@@ -1,0 +1,152 @@
+/* ======================================
+   Avatar Component — Perfect Circle
+====================================== */
+
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Image styling */
+.avatar__image {
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+/* Initials styling */
+.avatar__initials {
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+  user-select: none;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+
+/* Online indicator */
+.avatar__online-indicator {
+  position: absolute;
+  border: 2px solid #fff;
+  background-color: #10b981;
+  transition: all 0.2s ease;
+}
+
+/* Size variants using CSS custom properties for better maintainability */
+.avatar--tiny {
+  width: 20px;
+  height: 20px;
+}
+
+.avatar--tiny .avatar__initials {
+  font-size: 8px;
+}
+
+.avatar--tiny .avatar__online-indicator {
+  width: 6px;
+  height: 6px;
+  bottom: 1px;
+  right: 1px;
+}
+
+.avatar--small {
+  width: 28px;
+  height: 28px;
+}
+
+.avatar--small .avatar__initials {
+  font-size: 11px;
+}
+
+.avatar--small .avatar__online-indicator {
+  width: 7px;
+  height: 7px;
+  bottom: 1px;
+  right: 1px;
+}
+
+.avatar--navbar {
+  width: 44px;
+  height: 44px;
+}
+
+.avatar--navbar .avatar__initials {
+  font-size: 18px;
+}
+
+.avatar--navbar .avatar__online-indicator {
+  width: 11px;
+  height: 11px;
+  bottom: 2px;
+  right: 2px;
+}
+
+.avatar--medium {
+  width: 36px;
+  height: 36px;
+}
+
+.avatar--medium .avatar__initials {
+  font-size: 14px;
+}
+
+.avatar--medium .avatar__online-indicator {
+  width: 9px;
+  height: 9px;
+  bottom: 2px;
+  right: 2px;
+}
+
+.avatar--large {
+  width: 60px;
+  height: 60px;
+}
+
+.avatar--large .avatar__initials {
+  font-size: 24px;
+}
+
+.avatar--large .avatar__online-indicator {
+  width: 12px;
+  height: 12px;
+  bottom: 2px;
+  right: 2px;
+}
+
+.avatar--xlarge {
+  width: 80px;
+  height: 80px;
+}
+
+.avatar--xlarge .avatar__initials {
+  font-size: 32px;
+}
+
+.avatar--xlarge .avatar__online-indicator {
+  width: 14px;
+  height: 14px;
+  bottom: 3px;
+  right: 3px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .avatar--navbar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .avatar--navbar .avatar__initials {
+    font-size: 16px;
+  }
+
+  .avatar--navbar .avatar__online-indicator {
+    width: 10px;
+    height: 10px;
+    bottom: 2px;
+    right: 2px;
+  }
+}

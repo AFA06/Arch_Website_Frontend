@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import "./Home.css";
 
-const API_BASE_URL = "http://localhost:5050";
-
 
 
 // New: top instructors
@@ -48,273 +46,7 @@ const topInstructors = [
   },
 ];
 
-// (existing) allCourses list (unchanged from your original file)
-const allCourses = [
-  {
-    id: 101,
-    title: "The AI Engineer Course 2025: Complete AI Engineer Bootcamp",
-    category: "AI",
-    price: "$89.99",
-    image: "https://picsum.photos/seed/ai1/400/240",
-    students: 18234,
-    bestseller: true,
-    updated: "October 2025",
-    duration: "29 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Complete AI Engineer Training: Python, NLP, Transformers, LLMs, LangChain, Hugging Face, APIs.",
-    highlights: [
-      "The course provides the entire toolbox you need to become an AI Engineer",
-      "Understand key Artificial Intelligence concepts and build a solid foundation",
-      "Start coding in Python and learn how to use it for NLP and AI",
-    ],
-  },
-  {
-    id: 102,
-    title: "Modern Web Development with React",
-    category: "Web Development",
-    price: "$59.99",
-    image: "https://picsum.photos/seed/web1/400/240",
-    students: 9234,
-    bestseller: true,
-    updated: "September 2025",
-    duration: "35 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Learn React, hooks, context, routing, and modern web architecture with real projects.",
-    highlights: [
-      "Master modern front-end development",
-      "Create production-ready React apps",
-      "Includes deployment and optimization",
-    ],
-  },
-  {
-    id: 103,
-    title: "Figma UI/UX Design Mastery",
-    category: "Design",
-    price: "$49.99",
-    image: "https://picsum.photos/seed/design1/400/240",
-    students: 6245,
-    bestseller: false,
-    updated: "August 2025",
-    duration: "18 total hours",
-    level: "Beginner",
-    subtitles: true,
-    description: "Learn to design stunning user interfaces and experiences using Figma.",
-    highlights: [
-      "UI/UX principles explained clearly",
-      "Hands-on design projects",
-      "Export ready-to-use design systems",
-    ],
-  },
-  {
-    id: 104,
-    title: "AI for Marketing Professionals",
-    category: "Marketing",
-    price: "$34.99",
-    image: "https://picsum.photos/seed/marketing1/400/240",
-    students: 5211,
-    bestseller: false,
-    updated: "July 2025",
-    duration: "12 total hours",
-    level: "Intermediate",
-    subtitles: true,
-    description: "Use AI tools to enhance digital marketing strategies and performance.",
-    highlights: [
-      "Real-world marketing case studies",
-      "Practical use of AI tools",
-      "Boost campaign efficiency",
-    ],
-  },
-  {
-    id: 105,
-    title: "Advanced Business Strategy 2025",
-    category: "Business",
-    price: "$64.99",
-    image: "https://picsum.photos/seed/business1/400/240",
-    students: 7345,
-    bestseller: true,
-    updated: "October 2025",
-    duration: "22 total hours",
-    level: "Intermediate",
-    subtitles: true,
-    description: "Learn cutting-edge business strategies and frameworks to stay ahead in the modern market.",
-    highlights: [
-      "Real case studies",
-      "Strategic frameworks",
-      "Practical exercises",
-    ],
-  },
-  {
-    id: 106,
-    title: "Master English for Business",
-    category: "Language",
-    price: "$29.99",
-    image: "https://picsum.photos/seed/lang1/400/240",
-    students: 5230,
-    bestseller: false,
-    updated: "June 2025",
-    duration: "16 total hours",
-    level: "Beginner",
-    subtitles: true,
-    description: "Improve your professional English speaking and writing for global business environments.",
-    highlights: [
-      "Pronunciation tips",
-      "Real business scenarios",
-      "Practical exercises",
-    ],
-  },
-  {
-    id: 107,
-    title: "Advanced Python Techniques",
-    category: "Web Development",
-    price: "$69.99",
-    image: "https://picsum.photos/seed/python1/400/240",
-    students: 8400,
-    bestseller: true,
-    updated: "September 2025",
-    duration: "40 total hours",
-    level: "Intermediate",
-    subtitles: true,
-    description: "Take your Python skills to the next level with advanced techniques.",
-    highlights: ["OOP in Python", "File handling", "Advanced modules"],
-  },
-  {
-    id: 108,
-    title: "Deep Learning with TensorFlow",
-    category: "AI",
-    price: "$79.99",
-    image: "https://picsum.photos/seed/dl1/400/240",
-    students: 13200,
-    bestseller: true,
-    updated: "October 2025",
-    duration: "38 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Learn to build neural networks and deep learning models.",
-    highlights: ["Neural Networks", "CNNs & RNNs", "TensorFlow Projects"],
-  },
-  {
-    id: 109,
-    title: "JavaScript Masterclass",
-    category: "Web Development",
-    price: "$54.99",
-    image: "https://picsum.photos/seed/js1/400/240",
-    students: 10234,
-    bestseller: true,
-    updated: "August 2025",
-    duration: "33 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Master modern JavaScript for web development.",
-    highlights: ["ES6+", "DOM Manipulation", "Async & Promises"],
-  },
-  {
-    id: 110,
-    title: "Digital Marketing 101",
-    category: "Marketing",
-    price: "$39.99",
-    image: "https://picsum.photos/seed/marketing2/400/240",
-    students: 7600,
-    bestseller: false,
-    updated: "July 2025",
-    duration: "20 total hours",
-    level: "Beginner",
-    subtitles: true,
-    description: "Learn digital marketing fundamentals.",
-    highlights: ["SEO Basics", "Social Media Marketing", "Email Campaigns"],
-  },
-  {
-    id: 111,
-    title: "UI/UX Advanced Workshop",
-    category: "Design",
-    price: "$59.99",
-    image: "https://picsum.photos/seed/design2/400/240",
-    students: 5500,
-    bestseller: true,
-    updated: "August 2025",
-    duration: "25 total hours",
-    level: "Intermediate",
-    subtitles: true,
-    description: "Improve your UI/UX design skills with practical exercises.",
-    highlights: ["Figma Advanced", "Prototyping", "User Testing"],
-  },
-  {
-    id: 112,
-    title: "Business Analytics with Excel",
-    category: "Business",
-    price: "$44.99",
-    image: "https://picsum.photos/seed/business2/400/240",
-    students: 6100,
-    bestseller: false,
-    updated: "September 2025",
-    duration: "18 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Analyze business data effectively using Excel.",
-    highlights: ["Pivot Tables", "Charts & Graphs", "Formulas"],
-  },
-  {
-    id: 113,
-    title: "French Language Essentials",
-    category: "Language",
-    price: "$29.99",
-    image: "https://picsum.photos/seed/lang2/400/240",
-    students: 4300,
-    bestseller: false,
-    updated: "June 2025",
-    duration: "15 total hours",
-    level: "Beginner",
-    subtitles: true,
-    description: "Learn French for everyday communication.",
-    highlights: ["Vocabulary", "Grammar", "Speaking Practice"],
-  },
-  {
-    id: 114,
-    title: "AI for Healthcare",
-    category: "AI",
-    price: "$84.99",
-    image: "https://picsum.photos/seed/ai2/400/240",
-    students: 9100,
-    bestseller: true,
-    updated: "October 2025",
-    duration: "30 total hours",
-    level: "All Levels",
-    subtitles: true,
-    description: "Apply AI in the healthcare industry.",
-    highlights: ["Predictive Models", "Healthcare Data", "ML Projects"],
-  },
-  {
-    id: 115,
-    title: "Project Management Fundamentals",
-    category: "Business",
-    price: "$49.99",
-    image: "https://picsum.photos/seed/business3/400/240",
-    students: 7200,
-    bestseller: true,
-    updated: "October 2025",
-    duration: "22 total hours",
-    level: "Beginner",
-    subtitles: true,
-    description: "Master project management basics.",
-    highlights: ["Planning", "Scheduling", "Risk Management"],
-  },
-  {
-    id: 116,
-    title: "Advanced Figma Techniques",
-    category: "Design",
-    price: "$54.99",
-    image: "https://picsum.photos/seed/design3/400/240",
-    students: 4800,
-    bestseller: true,
-    updated: "August 2025",
-    duration: "20 total hours",
-    level: "Intermediate",
-    subtitles: true,
-    description: "Become a Figma power user with advanced techniques.",
-    highlights: ["Components", "Auto Layout", "Plugins"],
-  },
-];
+// Fallback courses data removed - component now relies on API data
 
 const faqs = [
   {
@@ -341,13 +73,14 @@ export default function Home() {
   const [hoveredCourse, setHoveredCourse] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [faqOpen, setFaqOpen] = useState(null);
-  
+
   // Dynamic data states
   const [featuredCourses, setFeaturedCourses] = useState([]);
   const [popularCourses, setPopularCourses] = useState([]);
   const [categoryCourses, setCategoryCourses] = useState([]);
   const [categories, setCategories] = useState(["All"]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
   useEffect(() => {
     const root = document.querySelector(".home");
@@ -359,26 +92,27 @@ export default function Home() {
     const fetchHomeData = async () => {
       try {
         setLoading(true);
-        
+        setApiError(null);
+
         // Fetch featured courses (for carousel)
         const featuredRes = await api.get("/courses?featured=true&limit=6");
         if (featuredRes.data && featuredRes.data.data) {
           setFeaturedCourses(featuredRes.data.data);
         }
-        
+
         // Fetch popular courses
         const popularRes = await api.get("/courses?sort=popular&limit=4");
         if (popularRes.data && popularRes.data.data) {
           setPopularCourses(popularRes.data.data);
         }
-        
+
         // Fetch categories
         const categoriesRes = await api.get("/courses/categories");
         if (categoriesRes.data && categoriesRes.data.data) {
           const categoryNames = categoriesRes.data.data.map(cat => cat.name || cat.title);
           setCategories(["All", ...categoryNames]);
         }
-        
+
         // Fetch category courses (for filtered section)
         const allCoursesRes = await api.get("/courses?limit=4");
         if (allCoursesRes.data && allCoursesRes.data.data) {
@@ -386,6 +120,7 @@ export default function Home() {
         }
       } catch (error) {
         console.error("Error fetching home data:", error);
+        setApiError("Failed to load data from server. Using fallback content.");
         // Keep using fallback data if API fails
       } finally {
         setLoading(false);
@@ -442,15 +177,34 @@ export default function Home() {
   const getCourseImage = (thumbnail) => {
     if (!thumbnail) return "https://picsum.photos/seed/default/400/240";
     if (thumbnail.startsWith('http')) return thumbnail;
-    return `${API_BASE_URL}${thumbnail}`;
+    return `http://localhost:5050${thumbnail}`;
   };
 
   const toggleFaq = (idx) => {
     setFaqOpen((prev) => (prev === idx ? null : idx));
   };
 
+  // Show error message if API fails but still render content
+  if (apiError) {
+    console.warn("API Error:", apiError);
+  }
+
   return (
     <main className="home">
+      {/* API Error Notice */}
+      {apiError && (
+        <div style={{
+          background: '#fff3cd',
+          border: '1px solid #ffeaa7',
+          color: '#856404',
+          padding: '10px',
+          textAlign: 'center',
+          marginBottom: '20px'
+        }}>
+          {apiError}
+        </div>
+      )}
+
       {/* HERO */}
       <section className="hero-section">
         <div className="hero-card">
