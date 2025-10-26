@@ -17,8 +17,7 @@ export const NotificationProvider = ({ children }) => {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        // ✅ fixed: removed extra slash
-        const res = await api.get("admin/announcements");
+        const res = await api.get("admin/announcements"); // ✅ backend route
         if (res.data?.data) setNotifications(res.data.data);
       } catch (err) {
         console.error("Failed to fetch notifications:", err);
@@ -29,15 +28,25 @@ export const NotificationProvider = ({ children }) => {
 
     fetchNotifications();
 
-    const socket = io("http://localhost:5050", { auth: { token } });
+    const socket = io("http://localhost:5050", {
+      auth: { token },
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      transports: ["websocket"],
+    });
 
-    socket.on("connect", () =>
-      console.log("Connected to notifications socket:", socket.id)
-    );
+    if (process.env.NODE_ENV !== "production") {
+      socket.on("connect", () =>
+        console.log("Connected to notifications socket:", socket.id)
+      );
+    }
 
     socket.on("newNotification", (notif) =>
       setNotifications((prev) => [notif, ...prev])
     );
+
+    socket.on("error", (err) => console.error("Socket error:", err));
 
     return () => socket.disconnect();
   }, [user, token]);
@@ -45,7 +54,6 @@ export const NotificationProvider = ({ children }) => {
   // Mark single notification as read
   const markAsRead = async (id) => {
     try {
-      // ✅ fixed: removed extra slash
       await api.put(`admin/announcements/${id}/read`);
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, read: true } : n))
@@ -58,13 +66,11 @@ export const NotificationProvider = ({ children }) => {
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      // ✅ fixed: removed extra slash
       await Promise.all(
         notifications
           .filter((n) => !n.read)
           .map((n) => api.put(`admin/announcements/${n._id}/read`))
       );
-
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch (err) {
       console.error("Failed to mark all notifications as read:", err);
@@ -92,6 +98,9 @@ export const NotificationProvider = ({ children }) => {
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (!context)
-    throw new Error("useNotifications must be used within a NotificationProvider");
+    throw new Error(
+      "useNotifications must be used within a NotificationProvider"
+    );
   return context;
 };
+ 
